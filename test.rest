@@ -1,0 +1,56 @@
+
+POST http://localhost:8080/v1/api/user/save
+Content-Type: application/json
+
+{
+    
+    "name":"kumaresh",
+    "email":"kums@gmmm",
+    "phone":"8544682222"
+
+
+}
+###
+
+
+POST http://localhost:8080/api/user/getuser
+Content-Type: application/json
+
+{
+    "userid":"36456b4a2d557147714d7153"
+}
+###
+
+
+###
+
+
+POST http://localhost:8080/api/user/getuser
+Content-Type: application/json
+
+{
+    "userid":"36456b4a2d557147714d7153"
+}
+###
+
+###
+
+
+POST http://localhost:8080/api/document/save
+Content-Type: application/json
+
+{
+    "userid":"36456b4a2d557147714d7153",
+
+    "document":{
+
+            "name":"aadhar",
+            "start_date":"1/12/9"
+    }
+}
+###
+
+
+
+GET http://localhost:8080/test/hello
+
