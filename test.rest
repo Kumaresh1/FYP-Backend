@@ -12,7 +12,7 @@ Content-Type: application/json
 ###
 
 
-POST http://localhost:8080/api/user/getuser
+GET http://localhost:8080/api/user/getuser
 Content-Type: application/json
 
 {
