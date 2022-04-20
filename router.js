@@ -10,7 +10,9 @@ module.exports = function (app) {
   //initialising api routes
   const apiRoutes = express.Router();
 
-  apiRoutes.get("/", "hello");
+  apiRoutes.get("/", (req, res, next) => {
+    res.status(200).json({ hii: "hii" });
+  });
   //********************User Auth APIs**************************
 
   //   apiRoutes.post("/user/signup", UserAuthController.Signup);
