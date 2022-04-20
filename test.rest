@@ -1,14 +1,13 @@
 
-POST http://localhost:8080/v1/api/user/save
+POST https://thawing-river-00445.herokuapp.com/api/user/signup
 Content-Type: application/json
 
-{
-    
-    "name":"kumaresh",
-    "email":"kums@gmmm",
-    "phone":"8544682222"
-
-
+{  
+    "name":"kumaresshneww",
+    "email":"kums@gmsmm",
+    "phone":"85446822s22",
+    "password":"fffsf",
+    "userId":"dddss"
 }
 ###
 
@@ -17,7 +16,7 @@ POST http://localhost:8080/api/user/getuser
 Content-Type: application/json
 
 {
-    "userid":"36456b4a2d557147714d7153"
+    "userId":"ddd"
 }
 ###
 
@@ -40,7 +39,7 @@ POST http://localhost:8080/api/document/save
 Content-Type: application/json
 
 {
-    "userid":"36456b4a2d557147714d7153",
+    "userid":"d",
 
     "document":{
 
