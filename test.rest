@@ -44,12 +44,8 @@ Content-Type: application/json
     }
 }
 ###
-GET http://localhost:8080/api/document/get
-Content-Type: application/json
+GET http://localhost:8080/api/document/get?userId=dds
 
-{
-    "userId":"0dc0eb23-3eef-4590-9ac3-11d40c00133e"
-}
 ###
 
 

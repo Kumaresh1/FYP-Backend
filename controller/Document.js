@@ -40,8 +40,9 @@ exports.SaveDocument = function (req, res, next) {
 
 //Read Document
 exports.ReadDocument = function (req, res, next) {
-  const { userId } = req.query;
-  Document.find({ userId: userId })
+  //console.log(req.query, req.params);
+  const query = req.query;
+  Document.find(query)
     .then((document_list) => {
       if (document_list == null) {
         throw Error("Error while reading document");
