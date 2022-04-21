@@ -46,7 +46,7 @@ exports.NewUser = async function (req, res, next) {
 exports.ReadUser = async function (req, res, next) {
   const { userId } = req.body;
   await database
-    .readUserByIds(userId)
+    .find({ userId: userId })
     .then((user) => {
       if (user == null) {
         throw Error("Error while reading user");
