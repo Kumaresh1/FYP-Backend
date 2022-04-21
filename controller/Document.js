@@ -19,14 +19,14 @@ exports.SaveDocument = function (req, res, next) {
     document: document,
   });
 
-  database
-    .saveDocument(documentUpload)
+  Document.updateOne({ userId: userId }, { $addToSet: { document: document } })
     .then((val) => {
       if (val == null) {
         throw Error("Error while saving Document");
       } else {
         res.status(201).json({
-          message: "Document created successfully.",
+          message: "Document uploaded successfully",
+          payload: val,
         });
       }
     })
@@ -41,10 +41,9 @@ exports.SaveDocument = function (req, res, next) {
 //Read Document
 exports.ReadDocument = function (req, res, next) {
   const { userId } = req.body;
-  database
-    .find({ userId: userId })
+  Document.find({ userId: userId })
     .then((document_list) => {
-      if (val == null) {
+      if (document_list == null) {
         throw Error("Error while reading document");
       } else {
         console.log(document_list);

@@ -2,7 +2,6 @@ const express = require("express");
 
 const DocumentController = require("./controller/Document");
 const UserController = require("./controller/User");
-const UserAuthController = require("./controller/UserAuth");
 
 const auth = require("./util/authorisation");
 
@@ -15,8 +14,8 @@ module.exports = function (app) {
   });
   //********************User Auth APIs**************************
 
-  apiRoutes.post("/user/signup", UserAuthController.Signup);
-  apiRoutes.post("/user/signin", UserAuthController.Signin);
+  // apiRoutes.post("/user/signup", UserAuthController.Signup);
+  // apiRoutes.post("/user/signin", UserAuthController.Signin);
 
   //********************User APIs**************************
 
@@ -25,17 +24,9 @@ module.exports = function (app) {
 
   //********************Document APIs**************************
   //Save Document
-  apiRoutes.get(
-    "/document/save",
-    auth.AuthManager,
-    DocumentController.SaveDocument
-  );
+  apiRoutes.post("/document/save", DocumentController.SaveDocument);
   //Get Document
-  apiRoutes.post(
-    "/document/get",
-    auth.AuthManager,
-    DocumentController.ReadDocument
-  );
+  apiRoutes.get("/document/get", DocumentController.ReadDocument);
 
   app.use("/api", apiRoutes);
 

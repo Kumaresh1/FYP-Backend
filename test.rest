@@ -1,13 +1,13 @@
 
-POST https://thawing-river-00445.herokuapp.com/api/user/signup
+POST http://localhost:8080/api/user/save
 Content-Type: application/json
 
 {  
     "name":"kumaresshneww",
-    "email":"kums@gmsmm",
-    "phone":"85446822s22",
-    "password":"fffsf",
-    "userId":"dddss"
+    "email":"kums@gdmsmm",
+    "phone":"8546822s22",
+    "password":"fffsf"
+
 }
 ###
 
@@ -16,7 +16,7 @@ GET http://localhost:8080/api/user/getuser
 Content-Type: application/json
 
 {
-    "userId":"ddd"
+    "userId":"0dc0eb23-3eef-4590-9ac3-11d40c00133e"
 }
 ###
 
@@ -24,12 +24,6 @@ Content-Type: application/json
 ###
 
 
-POST http://localhost:8080/api/user/getuser
-Content-Type: application/json
-
-{
-    "userid":"36456b4a2d557147714d7153"
-}
 ###
 
 ###
@@ -39,16 +33,24 @@ POST http://localhost:8080/api/document/save
 Content-Type: application/json
 
 {
-    "userid":"d",
+    "userId":"0dc0eb23-3eef-4590-9ac3-11d40c00133e",
 
     "document":{
-
-            "name":"aadhar",
-            "start_date":"1/12/9"
+        "imageUrl":"https://stackoverflow.com/questions/59525278/react-native-firebase-storage-get-url-after-uploading-an-image",
+        "name":"License",
+        "expiryDate":"12/12/2028",
+        "description":"dccd"
+            
     }
 }
 ###
+GET http://localhost:8080/api/document/get
+Content-Type: application/json
 
+{
+    "userId":"0dc0eb23-3eef-4590-9ac3-11d40c00133e"
+}
+###
 
 
 GET http://localhost:8080/test/hello

@@ -11,33 +11,63 @@ const Document = require("../model/documentModel");
 
 const { AUTHSECRET } = require("../config/secrets");
 const { TOKENEXPIRE } = require("../util/constants");
+const { v4: uuidv4 } = require("uuid");
 
 //Create User
 exports.NewUser = async function (req, res, next) {
-  let id = nanoid(IDSIZE);
-  let uuid = mongoose.Types.ObjectId(id);
+  //let id = nanoid(IDSIZE);
+  //let uuid = mongoose.Types.ObjectId(id);
+
+  const { email, password, name, phone } = req.body;
+  const userId = uuidv4();
   let user = new User({
-    userid: uuid,
-    email: req.body.email,
-    name: req.body.name,
-    phone: req.body.phone,
+    userId: userId,
+    email: email,
+    password: password,
+    name: name,
+    phone: phone,
   });
 
-  await database
-    .saveUser(user)
+  let documentUpload = new Document({
+    userId: userId,
+    document: [],
+  });
+
+  documentUpload
+    .save()
+    .then((val) => {
+      if (val == null) {
+        throw Error("Error while saving Document");
+      } else {
+        // res.status(201).json({
+        //   message: "Document created successfully",
+        //   payload: val,
+        // });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      // res.status(401).json({
+      //   error: DBERROR,
+      // });
+    });
+
+  await user
+    .save()
     .then((val) => {
       if (val == null) {
         throw Error("Error while setting user account");
       } else {
         res.status(201).json({
-          message: "user account successfully created.",
+          message: "user account successfully created",
+          payload: val,
         });
       }
     })
     .catch((err) => {
       console.log(err);
       res.status(401).json({
-        error: DBERROR,
+        error: err,
       });
     });
 };
@@ -45,8 +75,7 @@ exports.NewUser = async function (req, res, next) {
 //Read User
 exports.ReadUser = async function (req, res, next) {
   const { userId } = req.body;
-  await database
-    .find({ userId: userId })
+  await User.find({ userId: userId })
     .then((user) => {
       if (user == null) {
         throw Error("Error while reading user");
