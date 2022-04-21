@@ -18,6 +18,9 @@ const DocumentSchema = new Schema(
     document: {
       type: [DocumentInfoSchema],
     },
+    familyMembers: {
+      type: [],
+    },
   },
   {
     timestamps: true,

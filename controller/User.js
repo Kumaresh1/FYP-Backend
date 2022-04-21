@@ -15,9 +15,6 @@ const { v4: uuidv4 } = require("uuid");
 
 //Create User
 exports.NewUser = async function (req, res, next) {
-  //let id = nanoid(IDSIZE);
-  //let uuid = mongoose.Types.ObjectId(id);
-
   const { email, password, name, phone } = req.body;
   const userId = uuidv4();
   let user = new User({
@@ -82,6 +79,25 @@ exports.ReadUser = async function (req, res, next) {
       } else {
         console.log(user);
 
+        return res.status(200).json(user);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(401).json({
+        error: DBERROR,
+      });
+    });
+};
+
+exports.UpdateUser = async function (req, res, next) {
+  const query = req.body;
+  await User.updateOne({ userId: query.userId }, query.newData)
+    .then((user) => {
+      if (user == null) {
+        throw Error("Error while reading user");
+      } else {
+        // console.log(user);
         return res.status(200).json(user);
       }
     })

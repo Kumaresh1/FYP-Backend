@@ -27,6 +27,7 @@ module.exports = function (app) {
   apiRoutes.post("/document/save", DocumentController.SaveDocument);
   //Get Document
   apiRoutes.get("/document/get", DocumentController.ReadDocument);
+  apiRoutes.post("/document/addfamily", DocumentController.AddFamilyMember);
 
   app.use("/api", apiRoutes);
 
