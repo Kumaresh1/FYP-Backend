@@ -2,7 +2,6 @@
 
 const { nanoid } = require("nanoid");
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 const database = require("../services/mongodb");
 const { IDSIZE, DBERROR } = require("../util/constants");
 const jwt = require("jsonwebtoken");

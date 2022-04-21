@@ -2,7 +2,7 @@
 
 const { nanoid } = require("nanoid");
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const database = require("../services/mongodb");
 const { IDSIZE, DBERROR } = require("../util/constants");
 const jwt = require("jsonwebtoken");
@@ -17,37 +17,28 @@ exports.Signup = function (req, res, next) {
   const { email, password, name, phone } = req.body;
 
   //encrypting the plain password
-  bcrypt
-    .hash(password, 10)
-    .then((hash) => {
-      let id = nanoid(IDSIZE);
-      let uuid = mongoose.Types.ObjectId(id);
 
-      let user = new User({
-        userid: uuid,
-        email: email,
-        password: hash,
-        name: name,
-        phone: phone,
-      });
+  let id = nanoid(IDSIZE);
+  let uuid = mongoose.Types.ObjectId(id);
 
-      database
-        .saveUser(user)
-        .then((val) => {
-          if (val == null) {
-            throw Error("Error while setting account");
-          } else {
-            res.status(201).json({
-              message: "seller account successfully created.",
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(401).json({
-            error: DBERROR,
-          });
+  let user = new User({
+    userid: uuid,
+    email: email,
+    password: password,
+    name: name,
+    phone: phone,
+  });
+
+  database
+    .saveUser(user)
+    .then((val) => {
+      if (val == null) {
+        throw Error("Error while setting account");
+      } else {
+        res.status(201).json({
+          message: "seller account successfully created.",
         });
+      }
     })
     .catch((err) => {
       console.log(err);
@@ -78,37 +69,36 @@ exports.Signin = async function (req, res, next) {
 
     if (dbuser != null) {
       //if user exists with the current email than comparing the hash with the password field.
-      await bcrypt.compare(password, dbuser.password, function (err, result) {
-        if (result) {
-          let data = {
-            id: dbuser.userid,
-          };
-          let auth_data = {
-            userid: dbuser.userid,
-            name: dbuser.name,
-            email: dbuser.email,
-            phone: dbuser.phone,
-          };
-          //generating and sending the auth token as it will be required for furthur requests.
-          let authToken = jwt.sign(data, AUTHSECRET, {
-            expiresIn: TOKENEXPIRE,
-          });
 
-          dbuser.fcm_token = req.body.fcm_token;
+      if (password == dbuser.password) {
+        let data = {
+          id: dbuser.userid,
+        };
+        let auth_data = {
+          userid: dbuser.userid,
+          name: dbuser.name,
+          email: dbuser.email,
+          phone: dbuser.phone,
+        };
+        //generating and sending the auth token as it will be required for furthur requests.
+        let authToken = jwt.sign(data, AUTHSECRET, {
+          expiresIn: TOKENEXPIRE,
+        });
 
-          dbuser.save().then((result) => {
-            return res.status(200).json({
-              message: "Successfully logged in",
-              details: authToken,
-              user: auth_data,
-            });
+        dbuser.fcm_token = req.body.fcm_token;
+
+        dbuser.save().then((result) => {
+          return res.status(200).json({
+            message: "Successfully logged in",
+            details: authToken,
+            user: auth_data,
           });
-        } else {
-          return res.status(401).json({
-            error: "Invalid credentials",
-          });
-        }
-      });
+        });
+      } else {
+        return res.status(401).json({
+          error: "Invalid credentials",
+        });
+      }
     } else {
       throw "no user found";
     }
