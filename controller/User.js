@@ -74,7 +74,7 @@ exports.NewUser = async function (req, res, next) {
 
 //Read User
 exports.ReadUser = async function (req, res, next) {
-  const query = req.body;
+  const query = req.query;
   await User.find(query)
     .then((user) => {
       if (user == null) {

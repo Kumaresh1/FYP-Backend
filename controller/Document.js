@@ -40,7 +40,7 @@ exports.SaveDocument = function (req, res, next) {
 
 //Read Document
 exports.ReadDocument = function (req, res, next) {
-  const { userId } = req.body;
+  const { userId } = req.query;
   Document.find({ userId: userId })
     .then((document_list) => {
       if (document_list == null) {
