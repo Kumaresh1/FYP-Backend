@@ -29,6 +29,9 @@ const UserSchema = new Schema(
     fcm_token: {
       type: String,
     },
+    profileImage: {
+      type: String,
+    },
   },
   {
     timestamps: true,

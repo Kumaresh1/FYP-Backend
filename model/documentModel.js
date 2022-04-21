@@ -1,32 +1,26 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-
-
-const DocumentInfoSchema=new Schema({
-
-    name:[String],
-    start_date:[String],
-    expiry_date:[String],
-    desc:[String],
-    photo:[String],
-})
-
-
-const DocumentSchema = new Schema({
-    
-    userid:{
-        type:String,
-        unique:true
-     },
-     document:{
-         type:[DocumentInfoSchema]
-
-         //Contains 
-         //{name,start_date,expiry_date,Description,photo}
-     } 
-
-}, {
-    timestamps: true,
+const DocumentInfoSchema = new Schema({
+  name: [String],
+  start_date: [String],
+  expiry_date: [String],
+  description: [String],
+  imageUrl: [String],
 });
+
+const DocumentSchema = new Schema(
+  {
+    userId: {
+      type: String,
+      unique: true,
+    },
+    document: {
+      type: [DocumentInfoSchema],
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 module.exports = mongoose.model("Documents", DocumentSchema);

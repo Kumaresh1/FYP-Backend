@@ -13,13 +13,14 @@ const { TOKENEXPIRE } = require("../util/constants");
 
 //Save Document
 exports.SaveDocument = function (req, res, next) {
-  let document = new Document({
-    userid: req.body.userid,
-    document: req.body.document,
+  const { userId, document } = req.body;
+  let documentUpload = new Document({
+    userId: userId,
+    document: document,
   });
 
   database
-    .saveDocument(document)
+    .saveDocument(documentUpload)
     .then((val) => {
       if (val == null) {
         throw Error("Error while saving Document");
@@ -39,8 +40,9 @@ exports.SaveDocument = function (req, res, next) {
 
 //Read Document
 exports.ReadDocument = function (req, res, next) {
+  const { userId } = req.body;
   database
-    .readDocumentById(req.body.userid)
+    .find({ userId: userId })
     .then((document_list) => {
       if (val == null) {
         throw Error("Error while reading document");

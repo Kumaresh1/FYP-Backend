@@ -15,13 +15,13 @@ module.exports = function (app) {
   });
   //********************User Auth APIs**************************
 
-  //   apiRoutes.post("/user/signup", UserAuthController.Signup);
-  //   apiRoutes.post("/user/signin", UserAuthController.Signin);
+  apiRoutes.post("/user/signup", UserAuthController.Signup);
+  apiRoutes.post("/user/signin", UserAuthController.Signin);
 
   //********************User APIs**************************
 
-  //   apiRoutes.post("/user/save", UserController.NewUser);
-  //   apiRoutes.get("/user/getuser", UserController.ReadUser);
+  apiRoutes.post("/user/save", UserController.NewUser);
+  apiRoutes.get("/user/getuser", UserController.ReadUser);
 
   //********************Document APIs**************************
   //Save Document
