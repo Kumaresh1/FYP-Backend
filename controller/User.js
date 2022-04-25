@@ -93,7 +93,7 @@ exports.ReadUser = async function (req, res, next) {
 
 exports.UpdateUser = async function (req, res, next) {
   const query = req.body;
-  await User.updateOne({ userId: query.userId }, query.newData)
+  await User.updateOne({ userId: query.userId }, { $set: query.newData })
     .then((user) => {
       if (user == null) {
         throw Error("Error while reading user");
