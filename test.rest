@@ -61,3 +61,16 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/test/hello
 
+###
+PUT http://localhost:8080/api/user/updateuser
+Content-Type: application/json
+
+{
+    "userId":"0dc0eb23-3eef-4590-9ac3-11d40c00133e",
+    "newData":{
+        "name": "kumaressh_Updated",
+        "phone": "8546822122"
+
+    }
+}
+

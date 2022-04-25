@@ -93,6 +93,7 @@ exports.ReadUser = async function (req, res, next) {
 
 exports.UpdateUser = async function (req, res, next) {
   const query = req.body;
+  console.log(query.newData);
   await User.updateOne({ userId: query.userId }, { $set: query.newData })
     .then((user) => {
       if (user == null) {
@@ -111,7 +112,7 @@ exports.UpdateUser = async function (req, res, next) {
 };
 
 exports.DeleteUser = async function (req, res, next) {
-  const query = req.body;
+  const query = req.query;
   await User.DeleteOne({ userId: query.userId })
     .then((user) => {
       if (user == null) {
