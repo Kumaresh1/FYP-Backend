@@ -30,6 +30,7 @@ module.exports = function (app) {
   //Get Document
   apiRoutes.get("/document/get", DocumentController.ReadDocument);
   apiRoutes.get("/document/getphone", DocumentController.ReadDocumentByPhone);
+  apiRoutes.post("/document/ocrtojson", DocumentController.OcrToJson);
 
   apiRoutes.post(
     "/document/addfamily",

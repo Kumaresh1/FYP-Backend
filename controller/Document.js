@@ -170,3 +170,17 @@ exports.ReadDocumentByPhone = function (req, res, next) {
       });
     });
 };
+
+function parseDate(str) {
+  var m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  return m ? new Date(m[3], m[2] - 1, m[1]) : null;
+}
+
+exports.OcrToJson = function (req, res, next) {
+  //console.log(req.query, req.params);
+  const ocr = req.body.ocr;
+  let findDates = parseDate(ocr);
+  return res.status(200).json({
+    dates: findDates,
+  });
+};
