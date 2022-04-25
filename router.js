@@ -21,13 +21,21 @@ module.exports = function (app) {
 
   apiRoutes.post("/user/save", UserController.NewUser);
   apiRoutes.get("/user/getuser", UserController.ReadUser);
+  apiRoutes.get("/user/deleteuser", UserController.DeleteUser);
 
   //********************Document APIs**************************
   //Save Document
   apiRoutes.post("/document/save", DocumentController.SaveDocument);
   //Get Document
   apiRoutes.get("/document/get", DocumentController.ReadDocument);
-  apiRoutes.post("/document/addfamily", DocumentController.AddFamilyMember);
+  apiRoutes.get("/document/getphone", DocumentController.ReadDocumentByPhone);
+
+  apiRoutes.post(
+    "/document/addfamily",
+    DocumentController.familyMemberMiddleware,
+    DocumentController.familyMemberMiddleware2,
+    DocumentController.AddFamilyMember
+  );
 
   app.use("/api", apiRoutes);
 

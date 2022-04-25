@@ -72,6 +72,7 @@ exports.NewUser = async function (req, res, next) {
 //Read User
 exports.ReadUser = async function (req, res, next) {
   const query = req.query;
+  console.log(query);
   await User.find(query)
     .then((user) => {
       if (user == null) {
@@ -93,6 +94,25 @@ exports.ReadUser = async function (req, res, next) {
 exports.UpdateUser = async function (req, res, next) {
   const query = req.body;
   await User.updateOne({ userId: query.userId }, query.newData)
+    .then((user) => {
+      if (user == null) {
+        throw Error("Error while reading user");
+      } else {
+        // console.log(user);
+        return res.status(200).json(user);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(401).json({
+        error: DBERROR,
+      });
+    });
+};
+
+exports.DeleteUser = async function (req, res, next) {
+  const query = req.body;
+  await User.DeleteOne({ userId: query.userId })
     .then((user) => {
       if (user == null) {
         throw Error("Error while reading user");

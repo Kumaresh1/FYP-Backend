@@ -44,10 +44,20 @@ Content-Type: application/json
     }
 }
 ###
-GET http://localhost:8080/api/document/get?userId=dds
+GET http://localhost:8080/api/document/getphone?phone=6385119226
 
 ###
 
+POST http://localhost:8080/api/document/addfamily
+Content-Type: application/json
 
+{
+     "userId": "4bb7cae9-b847-4172-904e-fb0d01079800",
+        
+        "familyMemberPhone": "1234567890"
+}
+
+
+###
 GET http://localhost:8080/test/hello
 
