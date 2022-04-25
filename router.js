@@ -21,7 +21,8 @@ module.exports = function (app) {
 
   apiRoutes.post("/user/save", UserController.NewUser);
   apiRoutes.get("/user/getuser", UserController.ReadUser);
-  apiRoutes.get("/user/deleteuser", UserController.DeleteUser);
+  apiRoutes.delete("/user/deleteuser", UserController.DeleteUser);
+  apiRoutes.put("/user/updateuser", UserController.UpdateUser);
 
   //********************Document APIs**************************
   //Save Document
