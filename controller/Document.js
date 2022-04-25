@@ -188,7 +188,9 @@ function getDate(d) {
     month = dateSplitted[1];
     year = dateSplitted[2];
   }
-  result = d.match("[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}");
+
+  console.log("*** ", result);
+  result = d.match("[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g");
   if (null != result) {
     let dateSplitted = result[0].split(result[1]);
     day = dateSplitted[2];
@@ -205,11 +207,14 @@ function getDate(d) {
   return year + "/" + month + "/" + day;
 }
 exports.OcrToJson = function (req, res, next) {
-  //console.log(req.query, req.params);
   const ocr = req.body.ocr;
 
-  let findDates = getDate(ocr);
-  console.log(findDates);
+  const str = ocr;
+
+  let findDates = [];
+  findDates.push(str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g));
+  findDates.push(str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g));
+
   return res.status(200).json({
     dates: findDates,
   });
