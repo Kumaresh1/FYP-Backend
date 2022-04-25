@@ -105,7 +105,7 @@ exports.UpdateUser = async function (req, res, next) {
     .catch((err) => {
       console.log(err);
       res.status(401).json({
-        error: DBERROR,
+        error: err,
       });
     });
 };
