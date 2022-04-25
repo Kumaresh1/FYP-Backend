@@ -77,3 +77,13 @@ Content-Type: application/json
     }
 }
 
+
+###
+POST http://localhost:8080/api/document/ocrtojson
+Content-Type: application/json
+
+{
+    
+    "ocr":"aaaaaaaaa Manikandan S 26/09/2024 27"
+
+}
