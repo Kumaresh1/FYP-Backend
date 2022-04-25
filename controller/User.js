@@ -113,7 +113,8 @@ exports.UpdateUser = async function (req, res, next) {
 
 exports.DeleteUser = async function (req, res, next) {
   const query = req.query;
-  await User.DeleteOne({ userId: query.userId })
+
+  await User.deleteOne({ userId: query.userId })
     .then((user) => {
       if (user == null) {
         throw Error("Error while reading user");

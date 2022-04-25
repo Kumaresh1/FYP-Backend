@@ -48,6 +48,9 @@ GET http://localhost:8080/api/document/getphone?phone=6385119226
 
 ###
 
+DELETE http://localhost:8080/api/user/deleteuser?userId=0dc0eb23-3eef-4590-9ac3-11d40c00133e
+
+###
 POST http://localhost:8080/api/document/addfamily
 Content-Type: application/json
 
