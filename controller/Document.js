@@ -178,42 +178,24 @@ function parseDate(str) {
   return m;
 }
 
-function getDate(d) {
-  var day, month, year;
-
-  let result = d.match("[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}");
-  if (null != result) {
-    let dateSplitted = result[0].split(result[1]);
-    day = dateSplitted[0];
-    month = dateSplitted[1];
-    year = dateSplitted[2];
-  }
-
-  console.log("*** ", result);
-  result = d.match("[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g");
-  if (null != result) {
-    let dateSplitted = result[0].split(result[1]);
-    day = dateSplitted[2];
-    month = dateSplitted[1];
-    year = dateSplitted[0];
-  }
-
-  if (month > 12) {
-    aux = day;
-    day = month;
-    month = aux;
-  }
-
-  return year + "/" + month + "/" + day;
-}
 exports.OcrToJson = function (req, res, next) {
   const ocr = req.body.ocr;
 
-  const str = ocr;
+  const strArray = ocr;
 
   let findDates = [];
-  findDates.push(str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g));
-  findDates.push(str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g));
+  var d1, d2;
+
+  strArray.forEach((str) => {
+    d1 = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
+    d2 = str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g);
+    if (d1) {
+      findDates.push(d1);
+    }
+    if (d2) {
+      findDates.push(d2);
+    }
+  });
 
   return res.status(200).json({
     dates: findDates,

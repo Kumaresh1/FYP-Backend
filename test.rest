@@ -83,5 +83,5 @@ POST http://localhost:8080/api/document/ocrtojson
 Content-Type: application/json
 
 { 
-    "ocr":"aaaaaaaaa Manikandan S 26/09/2024 27/06/2022"
+     "ocr":["kumaresh" ,"12/12/2000" ,"22/11/2025"]
 }
