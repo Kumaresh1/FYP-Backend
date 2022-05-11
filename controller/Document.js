@@ -184,12 +184,28 @@ exports.OcrToJson = function (req, res, next) {
   const strArray = ocr;
 
   let findDates = [];
+  let expiryDate = "";
   var d1, d2;
 
   strArray.forEach((str) => {
     d1 = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
     d2 = str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g);
+
     if (d1) {
+      console.log(
+        new Date(d1[0].slice(6, 10), d1[0].slice(3, 5), d1[0].slice(0, 2))
+      );
+      let tempd1 = new Date(
+        d1[0].slice(0, 2),
+        d1[0].slice(3, 5),
+        d1[0].slice(6, 10)
+      );
+      let curDate = new Date();
+      console.log("", tempd1, curDate);
+
+      if (tempd1.getTime() > curDate.getTime()) {
+        console.log("greaterrr", tempd1.getTime(), curDate.getTime());
+      }
       findDates.push(d1);
     }
     if (d2) {

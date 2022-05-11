@@ -10,7 +10,7 @@ module.exports = function (app) {
   const apiRoutes = express.Router();
 
   apiRoutes.get("/", (req, res, next) => {
-    res.status(200).json({ hii: "hii" });
+    res.status(200).json({ dummy: "sample" });
   });
   //********************User Auth APIs**************************
 
@@ -38,6 +38,42 @@ module.exports = function (app) {
     DocumentController.familyMemberMiddleware2,
     DocumentController.AddFamilyMember
   );
+
+  // Notification API
+
+  const admin = require("firebase-admin");
+
+  const serviceAccount = require("./firebase.json");
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+
+  const tokens = [];
+
+  apiRoutes.post("/register", (req, res) => {
+    tokens.push(req.body.token);
+    res.status(200).json({ message: "Successfully registered FCM Token!" });
+  });
+
+  apiRoutes.post("/notifications", async (req, res) => {
+    try {
+      const { title, body, imageUrl } = req.body;
+      await admin.messaging().sendMulticast({
+        tokens,
+        notification: {
+          title,
+          body,
+          imageUrl,
+        },
+      });
+      res.status(200).json({ message: "Successfully sent notifications!" });
+    } catch (err) {
+      res
+        .status(err.status || 500)
+        .json({ message: err.message || "Something went wrong!" });
+    }
+  });
 
   app.use("/api", apiRoutes);
 
