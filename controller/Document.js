@@ -76,7 +76,7 @@ exports.SaveDocument = function (req, res, next) {
   console.log(ocr);
   const strArray = ocr;
 
-  let expiryDate = "";
+  let expiry_date = "";
   var d1, d2;
   let tags = [];
 
@@ -87,7 +87,7 @@ exports.SaveDocument = function (req, res, next) {
     if (d1) {
       if (checkExpiry(d1)) {
         //save to expiry dates and append to array
-        expiryDate = d1;
+        expiry_date = d1;
       }
     } else {
       // tag = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
@@ -111,11 +111,11 @@ exports.SaveDocument = function (req, res, next) {
       });
     }
   });
-  console.log("tags detected", tags, expiryDate);
+  console.log("tags detected", tags, expiry_date);
 
-  document.expiry_date = expiryDate;
+  document.expiry_date = expiry_date[0];
   document.tags = tags;
-
+  console.log(document);
   Document.updateOne(
     { userId: userId },
     {
@@ -260,7 +260,7 @@ exports.OcrToJson = function (req, res, next) {
   const ocr = req.body.ocrData;
   const strArray = ocr;
 
-  let expiryDate = "";
+  let expiry_date = "";
   var d1, d2;
   let tags = [];
 
@@ -271,7 +271,7 @@ exports.OcrToJson = function (req, res, next) {
     if (d1) {
       if (checkExpiry(d1[0])) {
         //save to expiry dates and append to array
-        expiryDate = d1;
+        expiry_date = d1;
       }
     } else {
       tag = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
