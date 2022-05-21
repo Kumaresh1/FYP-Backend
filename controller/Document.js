@@ -59,7 +59,8 @@ exports.familyMemberMiddleware2 = async (req, res, next) => {
 exports.SaveDocument = function (req, res, next) {
   const { userId, document } = req.body;
 
-  const ocr = req.body.ocrData;
+  const ocr = document.ocrData || [];
+  console.log(ocr);
   const strArray = ocr;
 
   let expiryDate = "";
@@ -69,11 +70,12 @@ exports.SaveDocument = function (req, res, next) {
   strArray.forEach((str) => {
     d1 = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
     // d2 = str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g);
-
+    console.log(str);
     if (d1) {
       if (checkExpiry(d1)) {
         //save to expiry dates and append to array
         expiryDate = d1;
+        console.log("Expiry Date", d1);
       }
     } else {
       // tag = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
@@ -101,7 +103,7 @@ exports.SaveDocument = function (req, res, next) {
     { userId: userId },
     {
       $addToSet: { document: document },
-      $set: { expiry_date: expiryDate, tags: tags },
+      $set: { expiry_date: expiryDate, tags: tags, type: document.type },
     }
   )
     .then((val) => {
@@ -222,7 +224,8 @@ function parseDate() {
 }
 
 function checkExpiry(date) {
-  ocrDate = date;
+  let ocrDate = date[0];
+  console.log(ocrDate, "hi");
   let d1 = ocrDate.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
 
   var dt1 = Date.parse("2022-05-21");
@@ -262,7 +265,7 @@ exports.OcrToJson = function (req, res, next) {
     // d2 = str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g);
 
     if (d1) {
-      if (checkExpiry(d1)) {
+      if (checkExpiry(d1[0])) {
         //save to expiry dates and append to array
         expiryDate = d1;
       }

@@ -38,9 +38,11 @@ Content-Type: application/json
 
     "document":{
         "imageUrl":"https://stackoverflow.com/questions/59525278/react-native-firebase-storage-get-url-after-uploading-an-image",
-        "name":"License",
+        "name":"Preethi 211",
         "expiryDate":"12/12/2028",
-        "description":"dccd"
+        "description":"dccd",
+        "ocrData":["24/05/2022"],
+        "type":"User"
             
     }
 }

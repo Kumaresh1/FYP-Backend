@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const DocumentInfoSchema = new Schema({
   name: [String],
   start_date: [String],
-  expiry_date: [String],
+  expiry_date: String,
   description: [String],
   tags: [],
   ocrData: [],
