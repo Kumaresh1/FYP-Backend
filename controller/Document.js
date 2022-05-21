@@ -19,8 +19,8 @@ var ProductTags = [
   "Washing Machine",
   "Washing",
   "Air conditioner",
-  "AC",
   "Fan",
+  "cooker",
 ];
 
 var BrandTags = ["Preethi", "Prestige", "LG", "samsung", "butterfly"];
