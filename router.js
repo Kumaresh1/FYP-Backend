@@ -5,6 +5,8 @@ const UserController = require("./controller/User");
 
 const auth = require("./util/authorisation");
 
+const User = require("./model/userModel");
+
 module.exports = function (app) {
   //initialising api routes
   const apiRoutes = express.Router();
@@ -49,18 +51,60 @@ module.exports = function (app) {
     credential: admin.credential.cert(serviceAccount),
   });
 
-  const tokens = [];
-
-  apiRoutes.post("/register", (req, res) => {
-    tokens.push(req.body.token);
+  const ExpiryDates = [
+    { userId: "d280b3e2-0a8b-494f-85ae-b67b45928d79", expiryDate: "" },
+  ];
+  apiRoutes.post("/register", async (req, res) => {
+    // tokens.push(req.body.token);
+    const { userId, fcm_token } = req.body;
+    let fcmToken = { fcm_token: fcm_token };
+    await User.updateOne({ userId: userId }, { $set: fcmToken })
+      .then((user) => {
+        if (user == null) {
+          throw Error("Error while reading user");
+        } else {
+          // console.log(user);
+          res.status(200).json(user);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(401).json({
+          error: err,
+        });
+      });
     res.status(200).json({ message: "Successfully registered FCM Token!" });
   });
 
-  apiRoutes.post("/notifications", async (req, res) => {
+  const notificationMiddleware = async (req, res, next) => {
+    //find Id of Family Member with Phone
+
+    const { userId } = req.body;
+
+    await User.findOne({ userId: userId })
+      .then((user) => {
+        if (user == null) {
+          throw Error("Error while reading user");
+        } else {
+          req.fcm_token = user.fcm_token;
+          console.log("MW1", req.body);
+          next();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(401).json({
+          error: "User does not exist",
+        });
+      });
+  };
+
+  apiRoutes.post("/notifications", notificationMiddleware, async (req, res) => {
     try {
       const { title, body, imageUrl } = req.body;
+      let userToken = [req.fcm_token];
       await admin.messaging().sendMulticast({
-        tokens,
+        userToken,
         notification: {
           title,
           body,

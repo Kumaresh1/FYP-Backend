@@ -15,7 +15,7 @@ const { v4: uuidv4 } = require("uuid");
 
 //Create User
 exports.NewUser = async function (req, res, next) {
-  const { email, password, name, phone } = req.body;
+  const { email, password, name, phone, userType } = req.body;
   const userId = uuidv4();
   let user = new User({
     userId: userId,
@@ -23,6 +23,7 @@ exports.NewUser = async function (req, res, next) {
     password: password,
     name: name,
     phone: phone,
+    userType: userType,
   });
 
   let documentUpload = new Document({

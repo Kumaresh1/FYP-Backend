@@ -29,6 +29,10 @@ const UserSchema = new Schema(
     fcm_token: {
       type: String,
     },
+    userType: {
+      type: String,
+      default: "User",
+    },
     profileImage: {
       type: String,
     },

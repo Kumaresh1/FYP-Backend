@@ -3,10 +3,11 @@ POST http://localhost:8080/api/user/save
 Content-Type: application/json
 
 {  
-    "name":"kumaresshneww",
-    "email":"kums@gdmsmm",
-    "phone":"8546822s22",
-    "password":"fffsf"
+    "name":"kumarsshneww",
+    "email":"kums@gmsmm",
+    "phone":"8546822422",
+    "password":"fffsf",
+    "userType":"Business"
 
 }
 ###
@@ -83,5 +84,30 @@ POST http://localhost:8080/api/document/ocrtojson
 Content-Type: application/json
 
 { 
-     "ocr":["kumaresh" ,"2029/12/20" ,"22/11/2025"]
+    
+    "userId": "d280b3e2-0a8b-494f-85ae-b67b45928d79",
+     "ocr":["kumaresh" ,"2029/12/20" ,"16/05/2022"]
+}
+
+###
+POST http://localhost:8080/api/notifications
+Content-Type: application/json
+
+{ 
+    "userId":"1234",
+ "title" : "Testing Option",
+ "body": "Does it work",
+ "imageUrl":"https://cdn-icons-png.flaticon.com/512/607/607870.png"
+
+
+}
+
+###
+POST http://localhost:8080/api/register
+Content-Type: application/json
+
+{ 
+ "userId": "d280b3e2-0a8b-494f-85ae-b67b45928d79",
+ "fcm_token":"newtoken2"
+
 }

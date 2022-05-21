@@ -196,9 +196,9 @@ exports.OcrToJson = function (req, res, next) {
         new Date(d1[0].slice(6, 10), d1[0].slice(3, 5), d1[0].slice(0, 2))
       );
       let tempd1 = new Date(
+        d1[0].slice(6, 10),
         d1[0].slice(0, 2),
-        d1[0].slice(3, 5),
-        d1[0].slice(6, 10)
+        d1[0].slice(3, 5)
       );
       let curDate = new Date();
       console.log("", tempd1, curDate);
