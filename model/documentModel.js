@@ -6,6 +6,9 @@ const DocumentInfoSchema = new Schema({
   start_date: [String],
   expiry_date: [String],
   description: [String],
+  tags: [],
+  ocrData: [],
+  type: String,
   imageUrl: [String],
 });
 

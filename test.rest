@@ -86,7 +86,7 @@ Content-Type: application/json
 { 
     
     "userId": "d280b3e2-0a8b-494f-85ae-b67b45928d79",
-     "ocr":["kumaresh" ,"2029/12/20" ,"16/05/2022"]
+    "ocr":["kumaresh" ,"2029/12/20" ,"16/05/2022"]
 }
 
 ###
@@ -108,6 +108,6 @@ Content-Type: application/json
 
 { 
  "userId": "d280b3e2-0a8b-494f-85ae-b67b45928d79",
- "fcm_token":"newtoken2"
+ "fcm_token":"newtoken"
 
 }

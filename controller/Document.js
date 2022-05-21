@@ -58,12 +58,52 @@ exports.familyMemberMiddleware2 = async (req, res, next) => {
 //Save Document
 exports.SaveDocument = function (req, res, next) {
   const { userId, document } = req.body;
-  let documentUpload = new Document({
-    userId: userId,
-    document: document,
+
+  const ocr = req.body.ocrData;
+  const strArray = ocr;
+
+  let expiryDate = "";
+  var d1, d2;
+  let tags = [];
+
+  strArray.forEach((str) => {
+    d1 = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
+    // d2 = str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g);
+
+    if (d1) {
+      if (checkExpiry(d1)) {
+        //save to expiry dates and append to array
+        expiryDate = d1;
+      }
+    } else {
+      // tag = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
+
+      //let Ocrstr = "mmmixie grinder";
+
+      BrandTags.forEach((tag) => {
+        var re = new RegExp(tag, "i");
+        let ans = str.search(re);
+        if (ans > -1) {
+          tags.append(tag);
+        }
+      });
+      ProductTags.forEach((tag) => {
+        var re = new RegExp(tag, "i");
+        let ans = str.search(re);
+        if (ans > -1) {
+          tags.append(tag);
+        }
+      });
+    }
   });
 
-  Document.updateOne({ userId: userId }, { $addToSet: { document: document } })
+  Document.updateOne(
+    { userId: userId },
+    {
+      $addToSet: { document: document },
+      $set: { expiry_date: expiryDate, tags: tags },
+    }
+  )
     .then((val) => {
       if (val == null) {
         throw Error("Error while saving Document");
@@ -171,45 +211,73 @@ exports.ReadDocumentByPhone = function (req, res, next) {
     });
 };
 
-function parseDate(str) {
-  var m = str.match(
-    /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/
-  );
-  return m;
+function parseDate() {
+  str = "12/12/2022";
+  let date1 = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
+  var d1 = Date.parse("2012-11-01");
+  var d2 = Date.parse("2012-11-04");
+  if (d1 < d2) {
+    alert("Error!");
+  }
 }
 
-exports.OcrToJson = function (req, res, next) {
-  const ocr = req.body.ocr;
+function checkExpiry(date) {
+  ocrDate = date;
+  let d1 = ocrDate.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
 
+  var dt1 = Date.parse("2022-05-21");
+  var dt2 = Date.parse(
+    d1[0].slice(6, 10) + "-" + d1[0].slice(3, 5) + "-" + d1[0].slice(0, 2)
+  );
+  console.log(dt1 < dt2);
+  if (dt1 < dt2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+var ProductTags = [
+  "Mixie",
+  "Grinder",
+  "Fridge",
+  "Washing Machine",
+  "Washing",
+  "Air conditioner",
+  "AC",
+  "Fan",
+];
+
+var BrandTags = ["Preethi", "LG", "samsung", "butterfly"];
+exports.OcrToJson = function (req, res, next) {
+  const ocr = req.body.ocrData;
   const strArray = ocr;
 
-  let findDates = [];
   let expiryDate = "";
   var d1, d2;
+  let tags = [];
 
   strArray.forEach((str) => {
     d1 = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
-    d2 = str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g);
+    // d2 = str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g);
 
     if (d1) {
-      console.log(
-        new Date(d1[0].slice(6, 10), d1[0].slice(3, 5), d1[0].slice(0, 2))
-      );
-      let tempd1 = new Date(
-        d1[0].slice(6, 10),
-        d1[0].slice(0, 2),
-        d1[0].slice(3, 5)
-      );
-      let curDate = new Date();
-      console.log("", tempd1, curDate);
-
-      if (tempd1.getTime() > curDate.getTime()) {
-        console.log("greaterrr", tempd1.getTime(), curDate.getTime());
+      if (checkExpiry(d1)) {
+        //save to expiry dates and append to array
+        expiryDate = d1;
       }
-      findDates.push(d1);
-    }
-    if (d2) {
-      findDates.push(d2);
+    } else {
+      tag = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
+
+      let Ocrstr = "mmmixie grinder";
+
+      BrandTags.forEach((tag) => {
+        var re = new RegExp(tag, "i");
+        let ans = str.search(re);
+        if (ans > -1) {
+          tags.append(tag);
+        }
+      });
     }
   });
 
