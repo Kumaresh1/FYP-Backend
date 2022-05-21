@@ -112,11 +112,14 @@ exports.SaveDocument = function (req, res, next) {
     }
   });
   console.log("tags detected", tags, expiryDate);
+
+  document.expiry_date = expiryDate;
+  document.tags = tags;
+
   Document.updateOne(
     { userId: userId },
     {
       $addToSet: { document: document },
-      $set: { expiry_date: expiryDate, tags: tags, type: document.type },
     }
   )
     .then((val) => {
