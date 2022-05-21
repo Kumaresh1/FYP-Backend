@@ -34,14 +34,14 @@ POST http://localhost:8080/api/document/save
 Content-Type: application/json
 
 {
-    "userId":"0dc0eb23-3eef-4590-9ac3-11d40c00133e",
+    "userId":"1e96d4c9-1c73-4fff-9166-3773ac5577dd",
 
     "document":{
         "imageUrl":"https://stackoverflow.com/questions/59525278/react-native-firebase-storage-get-url-after-uploading-an-image",
         "name":"Preethi 211",
         "expiryDate":"12/12/2028",
         "description":"new document",
-        "ocrData":["Prestige", "WARRANTY CARD (Customer's Copy)", "This page has to be treated as a full tledgod warranty card and n mquied t be maintalned by ve", "You will require to produce this card wule claiming the he wartanty period. In the", "unlikely event that a defect should deveiup in the Mibxer Korinler duning the period of this waranty", "the producr should be delivercd at your cost to our Keponal ervice cenzE or Autheorised Servic", "Dealer along with this warranty card.", "y", "24 &19"],
+        "ocrData":["Prestige","25/05/2022" ,"WARRANTY CARD (Customer's Copy)", "This page has to be treated as a full tledgod warranty card and n mquied t be maintalned by ve", "You will require to produce this card wule claiming the he wartanty period. In the", "unlikely event that a defect should deveiup in the Mibxer Korinler duning the period of this waranty", "the producr should be delivercd at your cost to our Keponal ervice cenzE or Autheorised Servic", "Dealer along with this warranty card.", "y", "24 &19"],
         "type":"General"
             
     }

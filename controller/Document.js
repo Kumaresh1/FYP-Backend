@@ -106,7 +106,7 @@ exports.SaveDocument = function (req, res, next) {
         var re = new RegExp(tag, "i");
         let ans = str.search(re);
         if (ans > -1) {
-          tags.append(tag);
+          tags.push(tag);
         }
       });
     }
