@@ -12,6 +12,19 @@ const { AUTHSECRET } = require("../config/secrets");
 const { TOKENEXPIRE } = require("../util/constants");
 const userModel = require("../model/userModel");
 
+var ProductTags = [
+  "Mixie",
+  "Grinder",
+  "Fridge",
+  "Washing Machine",
+  "Washing",
+  "Air conditioner",
+  "AC",
+  "Fan",
+];
+
+var BrandTags = ["Preethi", "Prestige", "LG", "samsung", "butterfly"];
+
 exports.familyMemberMiddleware = async (req, res, next) => {
   //find Id of Family Member with Phone
 
@@ -70,23 +83,23 @@ exports.SaveDocument = function (req, res, next) {
   strArray.forEach((str) => {
     d1 = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
     // d2 = str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g);
-    console.log(str);
+    //console.log(str);
     if (d1) {
       if (checkExpiry(d1)) {
         //save to expiry dates and append to array
         expiryDate = d1;
-        console.log("Expiry Date", d1);
       }
     } else {
       // tag = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
 
       //let Ocrstr = "mmmixie grinder";
-
+      //  console.log(str, "tag");
       BrandTags.forEach((tag) => {
         var re = new RegExp(tag, "i");
         let ans = str.search(re);
+        // console.log(str, re);
         if (ans > -1) {
-          tags.append(tag);
+          tags.push(tag);
         }
       });
       ProductTags.forEach((tag) => {
@@ -98,7 +111,7 @@ exports.SaveDocument = function (req, res, next) {
       });
     }
   });
-
+  console.log("tags detected", tags, expiryDate);
   Document.updateOne(
     { userId: userId },
     {
@@ -240,18 +253,6 @@ function checkExpiry(date) {
   }
 }
 
-var ProductTags = [
-  "Mixie",
-  "Grinder",
-  "Fridge",
-  "Washing Machine",
-  "Washing",
-  "Air conditioner",
-  "AC",
-  "Fan",
-];
-
-var BrandTags = ["Preethi", "LG", "samsung", "butterfly"];
 exports.OcrToJson = function (req, res, next) {
   const ocr = req.body.ocrData;
   const strArray = ocr;
