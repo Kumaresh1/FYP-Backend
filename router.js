@@ -200,8 +200,8 @@ module.exports = function (app) {
               //req.fcm_token = user.fcm_token;
               sendNotification({
                 fcm_token: user.fcm_token || user.name,
-                title: "New notification for document " + element.name,
-                body: element.name,
+                title: element.nam + "Document is going to expire ",
+                body: "Due date " + element.expiry_date,
               });
             }
           })
