@@ -63,14 +63,12 @@ module.exports = function (app) {
 
   const ReadExpiryDates = async function () {
     const query = {};
-    console.log(query);
+
     await ExpiryDatesModel.find({})
       .then((datesarr) => {
         if (datesarr == null) {
           throw Error("Error while reading user");
         } else {
-          console.log("fetching dates ->>");
-
           ExpiryDates = datesarr[0].expiry_dates;
           //  return res.status(200).json(datesarr);
         }
@@ -85,7 +83,7 @@ module.exports = function (app) {
 
   setInterval(() => {
     ReadExpiryDates();
-    console.log(ExpiryDates);
+    // console.log(ExpiryDates);
   }, 30000);
 
   apiRoutes.post("/register", async (req, res) => {
@@ -98,6 +96,7 @@ module.exports = function (app) {
           throw Error("Error while reading user");
         } else {
           // console.log(user);
+          console.log(fcm_token, user);
           res.status(200).json(user);
         }
       })
@@ -199,9 +198,8 @@ module.exports = function (app) {
               throw Error("Error while reading user");
             } else {
               //req.fcm_token = user.fcm_token;
-              console.log("getToken->>", user);
               sendNotification({
-                token: user.fcm_token || user.name,
+                fcm_token: user.fcm_token || user.name,
                 title: "New notification for document",
                 body: element.name,
               });
@@ -213,8 +211,6 @@ module.exports = function (app) {
             //   error: "User does not exist",
             // });
           });
-
-        console.log("after timeout");
       }
     });
   }, 40000);
@@ -242,7 +238,7 @@ module.exports = function (app) {
     console.log("send notification", obj);
     try {
       const { title, body, imageUrl } = obj;
-      let userToken = obj.token;
+      let userToken = obj.fcm_token;
       await admin.messaging().sendMulticast({
         userToken,
         notification: {
@@ -251,7 +247,6 @@ module.exports = function (app) {
           imageUrl,
         },
       });
-      console.log("Notification Sent");
       // res.status(200).json({ message: "Successfully sent notifications!" });
     } catch (err) {
       //   res
