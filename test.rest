@@ -40,7 +40,7 @@ Content-Type: application/json
         "imageUrl":"https://stackoverflow.com/questions/59525278/react-native-firebase-storage-get-url-after-uploading-an-image",
         "name":"Preethi 211",
         "description":"new document",
-        "ocrData":["Prestige","25/05/2022" ,"WARRANTY CARD (Customer's Copy)", "This page has to be treated as a full tledgod warranty card and n mquied t be maintalned by ve", "You will require to produce this card wule claiming the he wartanty period. In the", "unlikely event that a defect should deveiup in the Mibxer Korinler duning the period of this waranty", "the producr should be delivercd at your cost to our Keponal ervice cenzE or Autheorised Servic", "Dealer along with this warranty card.", "y", "24 &19"],
+        "ocrData":["Prestige","27/05/2022" ,"WARRANTY CARD (Customer's Copy)", "This page has to be treated as a full tledgod warranty card and n mquied t be maintalned by ve", "You will require to produce this card wule claiming the he wartanty period. In the", "unlikely event that a defect should deveiup in the Mibxer Korinler duning the period of this waranty", "the producr should be delivercd at your cost to our Keponal ervice cenzE or Autheorised Servic", "Dealer along with this warranty card.", "y", "24 &19"],
         "type":"General"
             
     }

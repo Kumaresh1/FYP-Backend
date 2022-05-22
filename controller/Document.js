@@ -68,12 +68,14 @@ exports.familyMemberMiddleware2 = async (req, res, next) => {
       });
     });
 };
+
+let expiryDates = [];
 //Save Document
 exports.SaveDocument = function (req, res, next) {
   const { userId, document } = req.body;
 
   const ocr = document.ocrData || [];
-  console.log(ocr);
+  //console.log(ocr);
   const strArray = ocr;
 
   let expiry_date = "";
@@ -88,6 +90,12 @@ exports.SaveDocument = function (req, res, next) {
       if (checkExpiry(d1)) {
         //save to expiry dates and append to array
         expiry_date = d1;
+        expiryDates.push({
+          userId,
+          expiry_date: expiry_date[0],
+          name: document.name,
+        });
+        //console.log(expiryDates);
       }
     } else {
       // tag = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
@@ -111,11 +119,9 @@ exports.SaveDocument = function (req, res, next) {
       });
     }
   });
-  console.log("tags detected", tags, expiry_date);
 
   document.expiry_date = expiry_date[0];
   document.tags = tags;
-  console.log(document);
   Document.updateOne(
     { userId: userId },
     {
@@ -126,6 +132,43 @@ exports.SaveDocument = function (req, res, next) {
       if (val == null) {
         throw Error("Error while saving Document");
       } else {
+        if (expiry_date.length > 0) {
+          next();
+        } else {
+          res.status(201).json({
+            message: "Document uploaded successfully",
+            payload: val,
+          });
+        }
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(401).json({
+        error: DBERROR,
+      });
+    });
+};
+const ExpiryDates = require("../model/expiryDateModel");
+
+exports.AddExpiryDate = async function (req, res, next) {
+  console.log("here expiry Date");
+  const { userId } = req.body;
+  ExpiryDates.updateOne(
+    { _id: "6289f57aa3cff3cefb1ddd47" },
+    { $addToSet: { expiry_dates: expiryDates } }
+  )
+    // let documentUpload = new ExpiryDates({
+    //   expiry_dates: expiryDates,
+    // });
+    // documentUpload
+    //   .save()
+
+    .then((val) => {
+      if (val == null) {
+        throw Error("Error while saving Document");
+      } else {
+        // console.log(val);
         res.status(201).json({
           message: "Document uploaded successfully",
           payload: val,
@@ -258,6 +301,9 @@ function checkExpiry(date) {
 
 exports.OcrToJson = function (req, res, next) {
   const ocr = req.body.ocrData;
+  const { userId, document } = req.body;
+
+  console.log(ocr);
   const strArray = ocr;
 
   let expiry_date = "";
@@ -267,28 +313,40 @@ exports.OcrToJson = function (req, res, next) {
   strArray.forEach((str) => {
     d1 = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
     // d2 = str.match(/[0-9]{4}([-/ .])[0-9]{2}[-/ .][0-9]{2}/g);
-
+    //console.log(str);
     if (d1) {
-      if (checkExpiry(d1[0])) {
+      if (checkExpiry(d1)) {
         //save to expiry dates and append to array
         expiry_date = d1;
       }
     } else {
-      tag = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
+      // tag = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
 
-      let Ocrstr = "mmmixie grinder";
-
+      //let Ocrstr = "mmmixie grinder";
+      //  console.log(str, "tag");
       BrandTags.forEach((tag) => {
         var re = new RegExp(tag, "i");
         let ans = str.search(re);
+        // console.log(str, re);
         if (ans > -1) {
-          tags.append(tag);
+          tags.push(tag);
+        }
+      });
+      ProductTags.forEach((tag) => {
+        var re = new RegExp(tag, "i");
+        let ans = str.search(re);
+        if (ans > -1) {
+          tags.push(tag);
         }
       });
     }
   });
+  console.log("tags detected", tags, expiry_date);
 
+  document.expiry_date = expiry_date[0];
+  document.tags = tags;
+  console.log(document);
   return res.status(200).json({
-    dates: findDates,
+    document: document,
   });
 };

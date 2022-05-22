@@ -4,8 +4,12 @@ const DocumentController = require("./controller/Document");
 const UserController = require("./controller/User");
 
 const auth = require("./util/authorisation");
+const mongoose = require("mongoose");
 
 const User = require("./model/userModel");
+const Document = require("./model/documentModel");
+const ExpiryDatesModel = require("./model/expiryDateModel");
+const { timeout } = require("nodemon/lib/config");
 
 module.exports = function (app) {
   //initialising api routes
@@ -28,7 +32,11 @@ module.exports = function (app) {
 
   //********************Document APIs**************************
   //Save Document
-  apiRoutes.post("/document/save", DocumentController.SaveDocument);
+  apiRoutes.post(
+    "/document/save",
+    DocumentController.SaveDocument,
+    DocumentController.AddExpiryDate
+  );
   //Get Document
   apiRoutes.get("/document/get", DocumentController.ReadDocument);
   apiRoutes.get("/document/getphone", DocumentController.ReadDocumentByPhone);
@@ -51,9 +59,35 @@ module.exports = function (app) {
     credential: admin.credential.cert(serviceAccount),
   });
 
-  const ExpiryDates = [
-    { userId: "d280b3e2-0a8b-494f-85ae-b67b45928d79", expiryDate: "" },
-  ];
+  var ExpiryDates = [];
+
+  const ReadExpiryDates = async function () {
+    const query = {};
+    console.log(query);
+    await ExpiryDatesModel.find({})
+      .then((datesarr) => {
+        if (datesarr == null) {
+          throw Error("Error while reading user");
+        } else {
+          console.log("fetching dates ->>");
+
+          ExpiryDates = datesarr[0].expiry_dates;
+          //  return res.status(200).json(datesarr);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // res.status(401).json({
+        //   error: DBERROR,
+        // });
+      });
+  };
+
+  setInterval(() => {
+    ReadExpiryDates();
+    //console.log("assigned", ExpiryDates);
+  }, 30000);
+
   apiRoutes.post("/register", async (req, res) => {
     // tokens.push(req.body.token);
     const { userId, fcm_token } = req.body;
@@ -77,8 +111,6 @@ module.exports = function (app) {
   });
 
   const notificationMiddleware = async (req, res, next) => {
-    //find Id of Family Member with Phone
-
     const { userId } = req.body;
 
     await User.findOne({ userId: userId })
@@ -99,6 +131,94 @@ module.exports = function (app) {
       });
   };
 
+  const getToken = async (userId) => {
+    await User.findOne({ userId: userId })
+      .then((user) => {
+        if (user == null) {
+          throw Error("Error while reading user");
+        } else {
+          //req.fcm_token = user.fcm_token;
+          console.log("getToken->>", user.name);
+          if (user.fcm_token) {
+            return user;
+          }
+          return user.name;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // res.status(401).json({
+        //   error: "User does not exist",
+        // });
+      });
+  };
+
+  function checkExpiryWeek(date) {
+    let ocrDate = date[0];
+    let d1 = ocrDate.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
+
+    var dt1 = Date.parse("2022-05-21");
+    var dt2 = Date.parse(
+      d1[0].slice(6, 10) + "-" + d1[0].slice(3, 5) + "-" + d1[0].slice(0, 2)
+    );
+    console.log("check week", dt1 < dt2);
+    if (dt1 < dt2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  function checkExpiryMonth(date) {
+    let ocrDate = date[0];
+    console.log(ocrDate, "hi");
+    let d1 = ocrDate.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
+
+    var dt1 = Date.parse("2022-05-21");
+    var dt2 = Date.parse(
+      d1[0].slice(6, 10) + "-" + d1[0].slice(3, 5) + "-" + d1[0].slice(0, 2)
+    );
+    console.log(dt1 < dt2);
+    if (dt1 < dt2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+  setInterval(async () => {
+    console.log("Inside timeout-->");
+    ExpiryDates.forEach(async (element) => {
+      if (checkExpiryWeek([element.expiry_date])) {
+        let token;
+
+        await User.findOne({ userId: element.userId })
+          .then((user) => {
+            if (user == null) {
+              throw Error("Error while reading user");
+            } else {
+              //req.fcm_token = user.fcm_token;
+              console.log("getToken->>", user.name);
+              sendNotification({
+                token: user.token || user.name,
+                title: "New notification for document",
+                body: element.name,
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            // res.status(401).json({
+            //   error: "User does not exist",
+            // });
+          });
+
+        console.log("after timeout");
+      }
+    });
+  }, 40000);
+
   apiRoutes.post("/notifications", notificationMiddleware, async (req, res) => {
     try {
       const { title, body, imageUrl } = req.body;
@@ -118,7 +238,27 @@ module.exports = function (app) {
         .json({ message: err.message || "Something went wrong!" });
     }
   });
-
+  const sendNotification = async (obj) => {
+    console.log("send notification", obj);
+    try {
+      const { title, body, imageUrl } = obj;
+      let userToken = obj.token;
+      await admin.messaging().sendMulticast({
+        userToken,
+        notification: {
+          title,
+          body,
+          imageUrl,
+        },
+      });
+      console.log("Notification Sent");
+      // res.status(200).json({ message: "Successfully sent notifications!" });
+    } catch (err) {
+      //   res
+      //     .status(err.status || 500)
+      //     .json({ message: err.message || "Something went wrong!" });
+    }
+  };
   app.use("/api", apiRoutes);
 
   app.use((req, res) => {
