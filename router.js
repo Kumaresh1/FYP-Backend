@@ -85,7 +85,7 @@ module.exports = function (app) {
 
   setInterval(() => {
     ReadExpiryDates();
-    //console.log("assigned", ExpiryDates);
+    console.log(ExpiryDates);
   }, 30000);
 
   apiRoutes.post("/register", async (req, res) => {
@@ -199,9 +199,9 @@ module.exports = function (app) {
               throw Error("Error while reading user");
             } else {
               //req.fcm_token = user.fcm_token;
-              console.log("getToken->>", user.name);
+              console.log("getToken->>", user);
               sendNotification({
-                token: user.token || user.name,
+                token: user.fcm_token || user.name,
                 title: "New notification for document",
                 body: element.name,
               });
