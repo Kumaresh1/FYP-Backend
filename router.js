@@ -200,7 +200,7 @@ module.exports = function (app) {
               //req.fcm_token = user.fcm_token;
               sendNotification({
                 fcm_token: user.fcm_token || user.name,
-                title: "New notification for document",
+                title: "New notification for document " + element.name,
                 body: element.name,
               });
             }
