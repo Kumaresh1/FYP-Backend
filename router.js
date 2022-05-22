@@ -244,7 +244,7 @@ module.exports = function (app) {
           tokens,
           notification: {
             title,
-            body,
+            body: "bodyy",
             imageUrl,
           },
         });
@@ -261,9 +261,9 @@ module.exports = function (app) {
 
   // sendNotification({
   //   fcm_token:
-  //     "fpDyrwo2Rka7HYpV4lvm4V:APA91bFT1UInFUv8WabySe-6potQWV7ACYejqRVa7A98T6jVCh0is51cDLoe7IHx7o2AFA-0lBf8BCTWFhaUPrnLMUm4_j3KxcjMApq1vItjiQI_GJ8ZkC73-I00w8bKLeY_3TXC4N7S",
-  //   title: "New notification for document",
-  //   body: "Testing",
+  //     "dqgfmhRZT3yu7tgV-Y0l_S:APA91bEPTLfjgUeGMGocbm1z8Ua8nknqVczYffhCRwlUV_Ravmc9nhjOXIOxwHmAGZzecyxkg3vBII0eFkWHgZW4DSHzIZPixFUQGO8ReTsZwPkTMMzXg3la9kH7nujk7FaIQSZkfZLE",
+  //   title: "Mani masss",
+  //   body: "mass mani",
   // });
   app.use("/api", apiRoutes);
 
