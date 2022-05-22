@@ -243,8 +243,8 @@ module.exports = function (app) {
         await admin.messaging().sendMulticast({
           tokens,
           notification: {
-            title,
-            body: "bodyy",
+            title: obj.title,
+            body: obj.body,
             imageUrl,
           },
         });
