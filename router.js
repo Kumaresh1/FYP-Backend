@@ -96,7 +96,7 @@ module.exports = function (app) {
           throw Error("Error while reading user");
         } else {
           // console.log(user);
-          console.log(fcm_token, user);
+          console.log("Register", fcm_token, user);
           res.status(200).json(user);
         }
       })
@@ -106,7 +106,7 @@ module.exports = function (app) {
           error: err,
         });
       });
-    res.status(200).json({ message: "Successfully registered FCM Token!" });
+    //res.status(200).json({ message: "Successfully registered FCM Token!" });
   });
 
   const notificationMiddleware = async (req, res, next) => {
@@ -235,25 +235,36 @@ module.exports = function (app) {
     }
   });
   const sendNotification = async (obj) => {
-    console.log("send notification", obj);
     try {
       const { title, body, imageUrl } = obj;
-      let userToken = obj.fcm_token;
-      await admin.messaging().sendMulticast({
-        userToken,
-        notification: {
-          title,
-          body,
-          imageUrl,
-        },
-      });
+      let tokens = [obj.fcm_token];
+      console.log("send notification", obj, tokens);
+      if (tokens.length > 0) {
+        await admin.messaging().sendMulticast({
+          tokens,
+          notification: {
+            title,
+            body,
+            imageUrl,
+          },
+        });
+      }
+      console.log("success");
       // res.status(200).json({ message: "Successfully sent notifications!" });
     } catch (err) {
+      console.log(err);
       //   res
       //     .status(err.status || 500)
       //     .json({ message: err.message || "Something went wrong!" });
     }
   };
+
+  sendNotification({
+    fcm_token:
+      "fpDyrwo2Rka7HYpV4lvm4V:APA91bFT1UInFUv8WabySe-6potQWV7ACYejqRVa7A98T6jVCh0is51cDLoe7IHx7o2AFA-0lBf8BCTWFhaUPrnLMUm4_j3KxcjMApq1vItjiQI_GJ8ZkC73-I00w8bKLeY_3TXC4N7S",
+    title: "New notification for document",
+    body: "Testing",
+  });
   app.use("/api", apiRoutes);
 
   app.use((req, res) => {
