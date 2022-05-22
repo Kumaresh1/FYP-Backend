@@ -200,7 +200,7 @@ module.exports = function (app) {
               //req.fcm_token = user.fcm_token;
               sendNotification({
                 fcm_token: user.fcm_token || user.name,
-                title: element.name + "Document is going to expire ",
+                title: element.name + " Document is going to expire ",
                 body: "Due date " + element.expiry_date,
               });
             }
@@ -219,14 +219,14 @@ module.exports = function (app) {
     try {
       const { title, body, imageUrl } = req.body;
       let userToken = [req.fcm_token];
-      await admin.messaging().sendMulticast({
-        userToken,
-        notification: {
-          title,
-          body,
-          imageUrl,
-        },
-      });
+      // await admin.messaging().sendMulticast({
+      //   userToken,
+      //   notification: {
+      //     title,
+      //     body,
+      //     imageUrl,
+      //   },
+      // });
       res.status(200).json({ message: "Successfully sent notifications!" });
     } catch (err) {
       res
