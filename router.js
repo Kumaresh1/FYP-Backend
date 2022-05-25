@@ -226,7 +226,7 @@ module.exports = function (app) {
             // });
           });
       } else if (dt1 - dt2 >= -604800000 && dt1 - dt2 < 0) {
-        console.log("send notification-same week");
+        // console.log("send notification-same week");
         let token;
 
         await User.findOne({ userId: element.userId })
@@ -235,7 +235,7 @@ module.exports = function (app) {
               throw Error("Error while reading user");
             } else {
               //req.fcm_token = user.fcm_token;
-              console.log("here", user);
+              //console.log("here", user);
               sendNotification({
                 fcm_token: user.fcm_token || user.name,
                 title: element.name + " Document is going to expire this week",
@@ -259,7 +259,7 @@ module.exports = function (app) {
               throw Error("Error while reading user");
             } else {
               //req.fcm_token = user.fcm_token;
-              console.log("here", user);
+              // console.log("here", user);
               sendNotification({
                 fcm_token: user.fcm_token || user.name,
                 title:
@@ -386,7 +386,7 @@ module.exports = function (app) {
     try {
       const { title, body, imageUrl } = obj;
       let tokens = [obj.fcm_token];
-      console.log("send notification", obj, tokens);
+      console.log("send notification", obj);
       if (tokens.length > 0) {
         await admin.messaging().sendMulticast({
           tokens,
@@ -397,7 +397,7 @@ module.exports = function (app) {
           },
         });
       }
-      console.log("success");
+      // console.log("success");
       // res.status(200).json({ message: "Successfully sent notifications!" });
     } catch (err) {
       console.log(err);
