@@ -38,7 +38,7 @@ Content-Type: application/json
 
     "document":{
         "imageUrl":"https://stackoverflow.com/questions/59525278/react-native-firebase-storage-get-url-after-uploading-an-image",
-        "name":"Preethi 211",
+        "name":"Preethi test",
         "description":"new document",
         "ocrData":["Prestige","27/05/2022" ,"WARRANTY CARD (Customer's Copy)", "This page has to be treated as a full tledgod warranty card and n mquied t be maintalned by ve", "You will require to produce this card wule claiming the he wartanty period. In the", "unlikely event that a defect should deveiup in the Mibxer Korinler duning the period of this waranty", "the producr should be delivercd at your cost to our Keponal ervice cenzE or Autheorised Servic", "Dealer along with this warranty card.", "y", "24 &19"],
         "type":"General"
@@ -116,8 +116,17 @@ Content-Type: application/json
 
 
 ###
-GET http://localhost:8080/api/searchtopbrand
+POST http://localhost:8080/api/searchtopproductunderbrand
+Content-Type: application/json
 
+{ 
+"brand":"Preethi"
+}
 
 ###
+POST http://localhost:8080/api/searchtopbrandunderproduct
+Content-Type: application/json
 
+{ 
+"product":"grinder"
+}

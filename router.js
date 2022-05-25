@@ -58,7 +58,14 @@ module.exports = function (app) {
   );
 
   apiRoutes.get("/searchtopbrand", BusinessController.searchTopSellingBrand);
-
+  apiRoutes.post(
+    "/searchtopproductunderbrand",
+    BusinessController.searchTopSellingProductUnderBrand
+  );
+  apiRoutes.post(
+    "/searchtopbrandunderproduct",
+    BusinessController.searchTopSellingBrandUnderProduct
+  );
   // Notification API
 
   const admin = require("firebase-admin");
@@ -80,7 +87,7 @@ module.exports = function (app) {
           throw Error("Error while reading user");
         } else {
           ExpiryDates = datesarr[0].expiry_dates;
-          console.log("Fetched dates ->> ", ExpiryDates);
+          //   console.log("Fetched dates ->> ", ExpiryDates);
           //  return res.status(200).json(datesarr);
         }
       })
@@ -135,7 +142,7 @@ module.exports = function (app) {
           throw Error("Error while reading user");
         } else {
           // console.log(user);
-          console.log("Register", fcm_token, user);
+          // console.log("Register", fcm_token, user);
           res.status(200).json(user);
         }
       })
@@ -157,7 +164,7 @@ module.exports = function (app) {
           throw Error("Error while reading user");
         } else {
           req.fcm_token = user.fcm_token;
-          console.log("MW1", req.body);
+          // console.log("MW1", req.body);
           next();
         }
       })
@@ -176,7 +183,7 @@ module.exports = function (app) {
           throw Error("Error while reading user");
         } else {
           //req.fcm_token = user.fcm_token;
-          console.log("getToken->>", user.name);
+          // console.log("getToken->>", user.name);
           if (user.fcm_token) {
             return user;
           }
@@ -195,7 +202,7 @@ module.exports = function (app) {
     ExpiryDates.forEach(async (element) => {
       let ocrDate = element.expiry_date;
 
-      console.log(ocrDate);
+      // console.log(ocrDate);
       let d1 = ocrDate.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
 
       var dt1 = Date.parse("2022-05-26");
@@ -386,7 +393,8 @@ module.exports = function (app) {
     try {
       const { title, body, imageUrl } = obj;
       let tokens = [obj.fcm_token];
-      console.log("send notification", obj);
+
+      // console.log("send notification", obj);
       if (tokens.length > 0) {
         await admin.messaging().sendMulticast({
           tokens,

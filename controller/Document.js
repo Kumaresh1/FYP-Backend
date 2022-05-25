@@ -13,17 +13,17 @@ const { TOKENEXPIRE } = require("../util/constants");
 const userModel = require("../model/userModel");
 
 var ProductTags = [
-  "Mixie",
-  "Grinder",
-  "Fridge",
-  "Washing Machine",
-  "Washing",
-  "Air conditioner",
-  "Fan",
+  "mixie",
+  "grinder",
+  "fridge",
+  "washing machine",
+  "washing",
+  "air conditioner",
+  "fan",
   "cooker",
 ];
 
-var BrandTags = ["Preethi", "Prestige", "LG", "samsung", "butterfly"];
+var BrandTags = ["preethi", "prestige", "lg", "samsung", "butterfly"];
 
 exports.familyMemberMiddleware = async (req, res, next) => {
   //find Id of Family Member with Phone
@@ -129,8 +129,8 @@ exports.SaveDocument = function (req, res, next) {
   var unique = tags.filter((v, i, a) => a.indexOf(v) === i);
 
   document.tags = unique;
-  document.productTags = productTags;
-  document.brandTags = brandTags;
+  document.productTags = productTags.filter((v, i, a) => a.indexOf(v) === i);
+  document.brandTags = brandTags.filter((v, i, a) => a.indexOf(v) === i);
   Document.updateOne(
     { userId: userId },
     {
