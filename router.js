@@ -54,6 +54,7 @@ module.exports = function (app) {
 
   apiRoutes.get(
     "/searchtopproduct",
+    BusinessController.TotalDocumentsMiddleware,
     BusinessController.searchTopSellingProduct
   );
 
