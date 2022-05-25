@@ -76,6 +76,8 @@ exports.SaveDocument = function (req, res, next) {
 
   const ocr = document.ocrData || [];
   //console.log(ocr);
+  const productTags = [],
+    brandTags = [];
   const strArray = ocr;
 
   let expiry_date = "";
@@ -108,6 +110,7 @@ exports.SaveDocument = function (req, res, next) {
         // console.log(str, re);
         if (ans > -1) {
           tags.push(tag);
+          brandTags.push(tag);
         }
       });
       ProductTags.forEach((tag) => {
@@ -115,6 +118,7 @@ exports.SaveDocument = function (req, res, next) {
         let ans = str.search(re);
         if (ans > -1) {
           tags.push(tag);
+          productTags.push(tag);
         }
       });
     }
@@ -125,6 +129,8 @@ exports.SaveDocument = function (req, res, next) {
   var unique = tags.filter((v, i, a) => a.indexOf(v) === i);
 
   document.tags = unique;
+  document.productTags = productTags;
+  document.brandTags = brandTags;
   Document.updateOne(
     { userId: userId },
     {

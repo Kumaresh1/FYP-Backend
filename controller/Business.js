@@ -168,25 +168,48 @@ exports.searchTopSellingBrand = async (req, res, next) => {
       });
     });
 };
-exports.searchTopSellingBrandUnderProduct = async (req, res, next) => {
+exports.searchTopSellingProductUnderBrand = async (req, res, next) => {
   //find Id of Family Member with Phone
 
-  const { seachQuery } = req.body;
+  console.log("Search top product", req.total_sum);
+  const { brand } = req.body;
 
-  await User.findOne({ phone: familyMemberPhone })
+  await Document.aggregate([
+    { $project: { document: { tags: 1 } } },
+
+    { $unwind: "$document" },
+    { $unwind: "$document.tags" },
+    { $group: { _id: "$document.tags", count: { $sum: 1 } } },
+  ])
     .then((data) => {
       if (data == null) {
         throw Error("Error while reading data");
       } else {
+        console.log(data);
+
+        const newObject = data.map((item) => {
+          if (ProductTags.includes(item._id)) {
+            return {
+              name: item._id,
+              percentage: Math.round(
+                (item.count / countTotalProduct(data)) * 100
+              ),
+              color: "fff",
+            };
+          } else {
+            return;
+          }
+        });
+        console.log("neww", newObject, countTotalProduct(data));
         return res.status(200).json({
-          documents: data,
+          documents: newObject,
         });
       }
     })
     .catch((err) => {
       console.log(err);
       res.status(401).json({
-        error: "Family member does not exist",
+        error: err,
       });
     });
 };
