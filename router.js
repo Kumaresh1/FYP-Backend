@@ -80,6 +80,7 @@ module.exports = function (app) {
           throw Error("Error while reading user");
         } else {
           ExpiryDates = datesarr[0].expiry_dates;
+          console.log("Fetched dates ->> ", ExpiryDates);
           //  return res.status(200).json(datesarr);
         }
       })
@@ -94,12 +95,17 @@ module.exports = function (app) {
   const InitExpiryDates = async function () {
     const query = {};
 
-    await ExpiryDatesModel.save({})
+    let ExpiryDatesUpload = new ExpiryDatesModel({
+      userId: "",
+      expiryDates: [],
+    });
+
+    await ExpiryDatesUpload.save()
       .then((datesarr) => {
         if (datesarr == null) {
           throw Error("Error while reading user");
         } else {
-          ExpiryDates = datesarr[0].expiry_dates;
+          // ExpiryDates = datesarr[0].expiry_dates;
           //  return res.status(200).json(datesarr);
         }
       })
@@ -110,10 +116,14 @@ module.exports = function (app) {
         // });
       });
   };
-  // setInterval(() => {
-  //   ReadExpiryDates();
-  //   // console.log(ExpiryDates);
-  // }, 30000);
+
+  // setTimeout(() => {
+  //   InitExpiryDates();
+  // }, 1000);
+
+  setInterval(() => {
+    ReadExpiryDates();
+  }, 30000);
 
   apiRoutes.post("/register", async (req, res) => {
     // tokens.push(req.body.token);
@@ -192,53 +202,7 @@ module.exports = function (app) {
       var dt2 = Date.parse(
         d1[0].slice(6, 10) + "-" + d1[0].slice(3, 5) + "-" + d1[0].slice(0, 2)
       );
-      if (dt1 - dt2 >= -2592000000 && dt1 - dt2 < 0) {
-        console.log("send notification-same month");
-        let token;
-
-        await User.findOne({ userId: element.userId })
-          .then((user) => {
-            if (user == null) {
-              throw Error("Error while reading user");
-            } else {
-              //req.fcm_token = user.fcm_token;
-              sendNotification({
-                fcm_token: user.fcm_token || user.name,
-                title: element.name + " Document is going to expire this week ",
-                body: "Due date " + element.expiry_date,
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            // res.status(401).json({
-            //   error: "User does not exist",
-            // });
-          });
-      } else if (dt1 - dt2 >= -604800000 && dt1 - dt2 < 0) {
-        console.log("send notification-same week");
-        let token;
-
-        await User.findOne({ userId: element.userId })
-          .then((user) => {
-            if (user == null) {
-              throw Error("Error while reading user");
-            } else {
-              //req.fcm_token = user.fcm_token;
-              sendNotification({
-                fcm_token: user.fcm_token || user.name,
-                title: element.name + " Document is going to expire this Month",
-                body: "Due date " + element.expiry_date,
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            // res.status(401).json({
-            //   error: "User does not exist",
-            // });
-          });
-      } else if (dt1 - dt2 == 0) {
+      if (dt1 - dt2 == 0) {
         console.log("send notification-same day");
         let token;
 
@@ -261,9 +225,141 @@ module.exports = function (app) {
             //   error: "User does not exist",
             // });
           });
+      } else if (dt1 - dt2 >= -604800000 && dt1 - dt2 < 0) {
+        console.log("send notification-same week");
+        let token;
+
+        await User.findOne({ userId: element.userId })
+          .then((user) => {
+            if (user == null) {
+              throw Error("Error while reading user");
+            } else {
+              //req.fcm_token = user.fcm_token;
+              console.log("here", user);
+              sendNotification({
+                fcm_token: user.fcm_token || user.name,
+                title: element.name + " Document is going to expire this Month",
+                body: "Due date " + element.expiry_date,
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            // res.status(401).json({
+            //   error: "User does not exist",
+            // });
+          });
+      } else if (dt1 - dt2 >= -2592000000 && dt1 - dt2 < 0) {
+        console.log("send notification-same month");
+        let token;
+
+        await User.findOne({ userId: element.userId })
+          .then((user) => {
+            if (user == null) {
+              throw Error("Error while reading user");
+            } else {
+              //req.fcm_token = user.fcm_token;
+              console.log("here", user);
+              sendNotification({
+                fcm_token: user.fcm_token || user.name,
+                title: element.name + " Document is going to expire this week ",
+                body: "Due date " + element.expiry_date,
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            // res.status(401).json({
+            //   error: "User does not exist",
+            // });
+          });
       }
     });
   }, 40000);
+
+  // setTimeout(async () => {
+  //   ExpiryDates.forEach(async (element) => {
+  //     let ocrDate = element.expiry_date;
+
+  //     console.log(ocrDate);
+  //     let d1 = ocrDate.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
+
+  //     var dt1 = Date.parse("2022-05-26");
+  //     var dt2 = Date.parse(
+  //       d1[0].slice(6, 10) + "-" + d1[0].slice(3, 5) + "-" + d1[0].slice(0, 2)
+  //     );
+  //     if (dt1 - dt2 >= -2592000000 && dt1 - dt2 < 0) {
+  //       console.log("send notification-same month");
+  //       let token;
+
+  //       await User.findOne({ userId: element.userId })
+  //         .then((user) => {
+  //           if (user == null) {
+  //             throw Error("Error while reading user");
+  //           } else {
+  //             //req.fcm_token = user.fcm_token;
+  //             sendNotification({
+  //               fcm_token: user.fcm_token || user.name,
+  //               title: element.name + " Document is going to expire this week ",
+  //               body: "Due date " + element.expiry_date,
+  //             });
+  //           }
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //           // res.status(401).json({
+  //           //   error: "User does not exist",
+  //           // });
+  //         });
+  //     } else if (dt1 - dt2 >= -604800000 && dt1 - dt2 < 0) {
+  //       console.log("send notification-same week");
+  //       let token;
+
+  //       await User.findOne({ userId: element.userId })
+  //         .then((user) => {
+  //           if (user == null) {
+  //             throw Error("Error while reading user");
+  //           } else {
+  //             //req.fcm_token = user.fcm_token;
+  //             sendNotification({
+  //               fcm_token: user.fcm_token || user.name,
+  //               title: element.name + " Document is going to expire this Month",
+  //               body: "Due date " + element.expiry_date,
+  //             });
+  //           }
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //           // res.status(401).json({
+  //           //   error: "User does not exist",
+  //           // });
+  //         });
+  //     } else if (dt1 - dt2 == 0) {
+  //       console.log("send notification-same day");
+  //       let token;
+
+  //       await User.findOne({ userId: element.userId })
+  //         .then((user) => {
+  //           if (user == null) {
+  //             throw Error("Error while reading user");
+  //           } else {
+  //             //req.fcm_token = user.fcm_token;
+  //             sendNotification({
+  //               fcm_token: user.fcm_token || user.name,
+  //               title: element.name + " Document is going to expire today",
+  //               body: "Due date " + element.expiry_date,
+  //             });
+  //           }
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //           // res.status(401).json({
+  //           //   error: "User does not exist",
+  //           // });
+  //         });
+  //     }
+  //   });
+  // }, 40000);
 
   apiRoutes.post("/notifications", notificationMiddleware, async (req, res) => {
     try {
@@ -284,6 +380,7 @@ module.exports = function (app) {
         .json({ message: err.message || "Something went wrong!" });
     }
   });
+
   const sendNotification = async (obj) => {
     try {
       const { title, body, imageUrl } = obj;
