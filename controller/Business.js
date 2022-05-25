@@ -147,7 +147,9 @@ exports.searchTopSellingBrand = async (req, res, next) => {
           if (BrandTags.includes(item._id)) {
             return {
               name: item._id,
-              percentage: (item.count / countTotalBrand(data)) * 100,
+              percentage: Math.round(
+                (item.count / countTotalBrand(data)) * 100
+              ),
               color: "fff",
             };
           } else {

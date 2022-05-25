@@ -91,6 +91,25 @@ module.exports = function (app) {
       });
   };
 
+  const InitExpiryDates = async function () {
+    const query = {};
+
+    await ExpiryDatesModel.save({})
+      .then((datesarr) => {
+        if (datesarr == null) {
+          throw Error("Error while reading user");
+        } else {
+          ExpiryDates = datesarr[0].expiry_dates;
+          //  return res.status(200).json(datesarr);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // res.status(401).json({
+        //   error: DBERROR,
+        // });
+      });
+  };
   // setInterval(() => {
   //   ReadExpiryDates();
   //   // console.log(ExpiryDates);
