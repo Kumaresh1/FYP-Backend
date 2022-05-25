@@ -121,7 +121,10 @@ exports.SaveDocument = function (req, res, next) {
   });
 
   document.expiry_date = expiry_date[0];
-  document.tags = tags;
+
+  var unique = tags.filter((v, i, a) => a.indexOf(v) === i);
+
+  document.tags = unique;
   Document.updateOne(
     { userId: userId },
     {
