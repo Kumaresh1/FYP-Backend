@@ -15,16 +15,32 @@ const userModel = require("../model/userModel");
 exports.searchTopSellingProduct = async (req, res, next) => {
   //find Id of Family Member with Phone
 
+  console.log("Search top product");
   const { seachQuery } = req.body;
 
-  await User.findOne({ phone: familyMemberPhone })
+  await Document.aggregate([
+    { $project: { document: { tags: 1 } } },
+    // { $unwind: "$document", $unwind: "$document.tags" },
+    // { $group: { _id: "$document.tags", count: { $sum: 1 } } },
+
+    { $unwind: "$document" },
+
+    { $unwind: "$document.tags" },
+    {
+      $group: {
+        _id: "$document.tags",
+        count: { $sum: 1 },
+      },
+    },
+  ])
     .then((user) => {
       if (user == null) {
         throw Error("Error while reading user");
       } else {
-        req.familyMemberId = user.userId;
-        console.log("MW1", req.familyMemberId);
-        next();
+        console.log(user);
+        return res.status(200).json({
+          documents: user,
+        });
       }
     })
     .catch((err) => {
@@ -45,8 +61,6 @@ exports.searchTopSellingBrand = async (req, res, next) => {
         throw Error("Error while reading user");
       } else {
         req.familyMemberId = user.userId;
-        console.log("MW1", req.familyMemberId);
-        next();
       }
     })
     .catch((err) => {
@@ -66,9 +80,9 @@ exports.searchTopSellingBrandUnderProduct = async (req, res, next) => {
       if (user == null) {
         throw Error("Error while reading user");
       } else {
-        req.familyMemberId = user.userId;
-        console.log("MW1", req.familyMemberId);
-        next();
+        return res.status(200).json({
+          documents: user,
+        });
       }
     })
     .catch((err) => {
