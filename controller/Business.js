@@ -20,18 +20,10 @@ exports.searchTopSellingProduct = async (req, res, next) => {
 
   await Document.aggregate([
     { $project: { document: { tags: 1 } } },
-    // { $unwind: "$document", $unwind: "$document.tags" },
-    // { $group: { _id: "$document.tags", count: { $sum: 1 } } },
 
     { $unwind: "$document" },
-
     { $unwind: "$document.tags" },
-    {
-      $group: {
-        _id: "$document.tags",
-        count: { $sum: 1 },
-      },
-    },
+    { $group: { _id: "$document.tags", count: { $sum: 1 } } },
   ])
     .then((user) => {
       if (user == null) {
