@@ -24,45 +24,55 @@ var ProductTags = [
 
 var BrandTags = ["Preethi", "Prestige", "LG", "samsung", "butterfly"];
 
-exports.TotalDocumentsMiddleware = async (req, res, next) => {
-  //find Id of Family Member with Phone
+// exports.TotalDocumentsMiddleware = async (req, res, next) => {
+//   //find Id of Family Member with Phone
 
-  console.log("Search top product Middleware");
-  const { seachQuery } = req.body;
+//   console.log("Search top product Middleware");
+//   const { seachQuery } = req.body;
 
-  await Document.aggregate([
-    { $unwind: "$document" },
-    {
-      $match: {
-        "document.type": {
-          $eq: "General",
-        },
-      },
-    },
-    { $group: { _id: "$document", sum: { $sum: 1 } } },
-    { $group: { _id: null, total_sum: { $sum: "$sum" } } },
-  ])
-    .then((data) => {
-      if (data == null) {
-        throw Error("Error while reading data");
-      } else {
-        console.log(data);
-        req.total_sum = data[0].total_sum;
-        next();
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(401).json({
-        error: err,
-      });
-    });
-};
+//   await Document.aggregate([
+//     { $unwind: "$document" },
+//     {
+//       $match: {
+//         "document.type": {
+//           $eq: "General",
+//         },
+//       },
+//     },
+//     { $group: { _id: "$document", sum: { $sum: 1 } } },
+//     { $group: { _id: null, total_sum: { $sum: "$sum" } } },
+//   ])
+//     .then((data) => {
+//       if (data == null) {
+//         throw Error("Error while reading data");
+//       } else {
+//         console.log(data);
+//         req.total_sum = data[0].total_sum;
+//         next();
+//       }
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(401).json({
+//         error: err,
+//       });
+//     });
+// };
 
 const countTotalProduct = (data) => {
   let count = 0;
   data.forEach((element) => {
     if (ProductTags.includes(element._id)) {
+      count += element.count;
+    }
+  });
+  return count;
+};
+
+const countTotalBrand = (data) => {
+  let count = 0;
+  data.forEach((element) => {
+    if (BrandTags.includes(element._id)) {
       count += element.count;
     }
   });
@@ -113,23 +123,46 @@ exports.searchTopSellingProduct = async (req, res, next) => {
       });
     });
 };
+
 exports.searchTopSellingBrand = async (req, res, next) => {
   //find Id of Family Member with Phone
 
+  console.log("Search top brand");
   const { seachQuery } = req.body;
 
-  await User.findOne({ phone: familyMemberPhone })
+  await Document.aggregate([
+    { $project: { document: { tags: 1 } } },
+
+    { $unwind: "$document" },
+    { $unwind: "$document.tags" },
+    { $group: { _id: "$document.tags", count: { $sum: 1 } } },
+  ])
     .then((data) => {
       if (data == null) {
         throw Error("Error while reading data");
       } else {
-        req.familyMemberId = data.userId;
+        console.log(data);
+
+        const newObject = data.map((item) => {
+          if (BrandTags.includes(item._id)) {
+            return {
+              name: item._id,
+              percentage: (item.count / countTotalBrand(data)) * 100,
+              color: "fff",
+            };
+          } else {
+            return;
+          }
+        });
+        return res.status(200).json({
+          documents: newObject,
+        });
       }
     })
     .catch((err) => {
       console.log(err);
       res.status(401).json({
-        error: "Family member does not exist",
+        error: err,
       });
     });
 };

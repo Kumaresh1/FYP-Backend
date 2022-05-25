@@ -116,7 +116,7 @@ Content-Type: application/json
 
 
 ###
-GET http://localhost:8080/api/searchtopproduct
+GET http://localhost:8080/api/searchtopbrand
 
 
 ###

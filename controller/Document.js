@@ -287,7 +287,7 @@ function parseDate() {
 
 function checkExpiry(date) {
   let ocrDate = date[0];
-  console.log(ocrDate, "hi");
+  console.log(ocrDate);
   let d1 = ocrDate.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
 
   var dt1 = Date.parse("2022-05-21");
@@ -303,10 +303,8 @@ function checkExpiry(date) {
 }
 
 exports.OcrToJson = function (req, res, next) {
-  const ocr = req.body.ocrData;
-  const { userId, document } = req.body;
-
-  console.log(ocr);
+  const ocr = req.body.ocrData || [];
+  //console.log(ocr);
   const strArray = ocr;
 
   let expiry_date = "";
@@ -321,6 +319,12 @@ exports.OcrToJson = function (req, res, next) {
       if (checkExpiry(d1)) {
         //save to expiry dates and append to array
         expiry_date = d1;
+        expiryDates.push({
+          userId,
+          expiry_date: expiry_date[0],
+          name: document.name,
+        });
+        //console.log(expiryDates);
       }
     } else {
       // tag = str.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
@@ -344,12 +348,36 @@ exports.OcrToJson = function (req, res, next) {
       });
     }
   });
-  console.log("tags detected", tags, expiry_date);
 
   document.expiry_date = expiry_date[0];
-  document.tags = tags;
-  console.log(document);
-  return res.status(200).json({
-    document: document,
-  });
+
+  var unique = tags.filter((v, i, a) => a.indexOf(v) === i);
+
+  document.tags = unique;
+  Document.updateOne(
+    { userId: userId },
+    {
+      $addToSet: { document: document },
+    }
+  )
+    .then((val) => {
+      if (val == null) {
+        throw Error("Error while saving Document");
+      } else {
+        if (expiry_date.length > 0) {
+          next();
+        } else {
+          res.status(201).json({
+            message: "Document uploaded successfully",
+            payload: val,
+          });
+        }
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(401).json({
+        error: DBERROR,
+      });
+    });
 };
