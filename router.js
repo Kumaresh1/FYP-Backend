@@ -238,7 +238,7 @@ module.exports = function (app) {
               console.log("here", user);
               sendNotification({
                 fcm_token: user.fcm_token || user.name,
-                title: element.name + " Document is going to expire this Month",
+                title: element.name + " Document is going to expire this week",
                 body: "Due date " + element.expiry_date,
               });
             }
@@ -262,7 +262,8 @@ module.exports = function (app) {
               console.log("here", user);
               sendNotification({
                 fcm_token: user.fcm_token || user.name,
-                title: element.name + " Document is going to expire this week ",
+                title:
+                  element.name + " Document is going to expire this month ",
                 body: "Due date " + element.expiry_date,
               });
             }
