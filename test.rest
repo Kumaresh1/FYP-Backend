@@ -124,9 +124,15 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8080/api/searchtopbrandunderproduct
-Content-Type: application/json
+GET  http://localhost:8080/api/searchtopbrandunderproduct?product=grinder
 
-{ 
-"product":"grinder"
-}
+
+###
+GET  http://localhost:8080/api/loaddata
+
+
+###
+GET  http://localhost:8080/api/recommend?userId=28e441b3-adca-4208-8dab-d4a406b8b56c
+
+
+

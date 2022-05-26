@@ -283,3 +283,98 @@ exports.searchTopSellingBrandUnderProduct = async (req, res, next) => {
       });
     });
 };
+
+const ContentBasedRecommender = require("content-based-recommender");
+
+exports.recommendations = async (req, res, next) => {
+  console.log("Search top brand under product", req.body);
+  const { userId } = req.query;
+
+  await Document.aggregate([
+    { $project: { userId: 1, document: { tags: 1 } } },
+
+    { $unwind: "$document" },
+  ])
+    .then((data) => {
+      if (data == null) {
+        throw Error("Error while reading data");
+      } else {
+        var AllData = [];
+        var AlldataFilter = [];
+        data.map((item) => {
+          if (item.document.tags.length > 1) {
+            var userData = {
+              id: item.userId,
+              content: "",
+            };
+
+            item.document.tags.map((tag) => {
+              // if (BrandTags.includes(tag)) {
+              userData.content += tag + " ";
+              // console.log(userData);
+
+              // }
+            });
+
+            AllData.push(userData);
+            AlldataFilter[userData.id] = userData.content;
+          }
+          // console.log(item);
+        });
+        const counts = {};
+
+        // const productPercentage = [];
+        // for (const product in counts) {
+        //   productPercentage.push({
+        //     name: product,
+        //     percentage: Math.round((counts[product] / AllBrands.length) * 100),
+        //   });
+        // }
+
+        const recommender = new ContentBasedRecommender({
+          minScore: 0.1,
+
+          maxSimilarDocuments: 100,
+        });
+
+        // start training
+        recommender.train(AllData);
+
+        //get top 100 similar items to document 1000002
+        const similarDocuments = recommender.getSimilarDocuments(
+          userId || "28e441b3-adca-4208-8dab-d4a406b8b56c",
+          0,
+          100
+        );
+
+        // console.log(
+        //   similarDocuments,
+        //   similarDocuments.filter((document) => document.score < 0.07)
+        // );
+        const filteredData = similarDocuments;
+        // .filter(
+        //   (document) => document.score < 1
+        // );
+
+        const recommendData = filteredData.map((data) => {
+          return {
+            id: data.id,
+            data: AlldataFilter[data.id],
+            score: data.score,
+          };
+        });
+        return res.status(200).json({
+          //  documents: similarDocuments,
+          currentData: AlldataFilter[userId],
+          recommendData: recommendData,
+          total: data,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(401).json({
+        error: err,
+      });
+    });
+};

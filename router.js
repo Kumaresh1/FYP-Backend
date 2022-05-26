@@ -3,6 +3,7 @@ const express = require("express");
 const DocumentController = require("./controller/Document");
 const BusinessController = require("./controller/Business");
 const UserController = require("./controller/User");
+const DataController = require("./controller/LoadData");
 
 const auth = require("./util/authorisation");
 const mongoose = require("mongoose");
@@ -66,6 +67,11 @@ module.exports = function (app) {
     "/searchtopbrandunderproduct",
     BusinessController.searchTopSellingBrandUnderProduct
   );
+  apiRoutes.get("/loaddata", DataController.LoadData);
+  apiRoutes.get("/recommend", BusinessController.recommendations);
+
+  // DataController.loadDataset();
+
   // Notification API
 
   const admin = require("firebase-admin");
@@ -283,7 +289,7 @@ module.exports = function (app) {
           });
       }
     });
-  }, 40000);
+  }, 4000000);
 
   // setTimeout(async () => {
   //   ExpiryDates.forEach(async (element) => {
