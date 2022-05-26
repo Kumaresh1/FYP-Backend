@@ -58,11 +58,11 @@ module.exports = function (app) {
   );
 
   apiRoutes.get("/searchtopbrand", BusinessController.searchTopSellingBrand);
-  apiRoutes.post(
+  apiRoutes.get(
     "/searchtopproductunderbrand",
     BusinessController.searchTopSellingProductUnderBrand
   );
-  apiRoutes.post(
+  apiRoutes.get(
     "/searchtopbrandunderproduct",
     BusinessController.searchTopSellingBrandUnderProduct
   );

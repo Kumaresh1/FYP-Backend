@@ -172,7 +172,7 @@ exports.searchTopSellingProductUnderBrand = async (req, res, next) => {
   //find Id of Family Member with Phone
 
   console.log("Search top product under brand", req.body);
-  const { brand } = req.body;
+  const { brand } = req.query;
 
   await Document.aggregate([
     { $project: { document: { tags: 1 } } },
@@ -231,7 +231,7 @@ exports.searchTopSellingBrandUnderProduct = async (req, res, next) => {
   //find Id of Family Member with Phone
 
   console.log("Search top brand under product", req.body);
-  const { product } = req.body;
+  const { product } = req.query;
 
   await Document.aggregate([
     { $project: { document: { tags: 1 } } },

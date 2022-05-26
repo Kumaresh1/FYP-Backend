@@ -21,9 +21,26 @@ var ProductTags = [
   "air conditioner",
   "fan",
   "cooker",
+  "tv",
+  "television",
+  "mobile",
+  "phone",
 ];
 
-var BrandTags = ["preethi", "prestige", "lg", "samsung", "butterfly"];
+var BrandTags = [
+  "preethi",
+  "prestige",
+  "lg",
+  "samsung",
+  "butterfly",
+  "onida",
+  "hitachi",
+  "phillips",
+  "haier",
+  "bajaj",
+  "usha",
+  "pigeon",
+];
 
 exports.familyMemberMiddleware = async (req, res, next) => {
   //find Id of Family Member with Phone
