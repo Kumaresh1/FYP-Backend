@@ -182,27 +182,7 @@ module.exports = function (app) {
       });
   };
 
-  const getToken = async (userId) => {
-    await User.findOne({ userId: userId })
-      .then((user) => {
-        if (user == null) {
-          throw Error("Error while reading user");
-        } else {
-          //req.fcm_token = user.fcm_token;
-          // console.log("getToken->>", user.name);
-          if (user.fcm_token) {
-            return user;
-          }
-          return user.name;
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        // res.status(401).json({
-        //   error: "User does not exist",
-        // });
-      });
-  };
+  
 
   setInterval(async () => {
     ExpiryDates.forEach(async (element) => {
@@ -289,7 +269,7 @@ module.exports = function (app) {
           });
       }
     });
-  }, 4000000);
+  }, 40000);
 
   // setTimeout(async () => {
   //   ExpiryDates.forEach(async (element) => {
@@ -400,7 +380,7 @@ module.exports = function (app) {
       const { title, body, imageUrl } = obj;
       let tokens = [obj.fcm_token];
 
-      // console.log("send notification", obj);
+    console.log("send notification", obj);
       if (tokens.length > 0) {
         await admin.messaging().sendMulticast({
           tokens,
@@ -432,4 +412,30 @@ module.exports = function (app) {
   app.use((req, res) => {
     res.status(404).send("Invalid request");
   });
+};
+
+
+
+
+
+const getToken = async (userId) => {
+  await User.findOne({ userId: userId })
+    .then((user) => {
+      if (user == null) {
+        throw Error("Error while reading user");
+      } else {
+        //req.fcm_token = user.fcm_token;
+        // console.log("getToken->>", user.name);
+        if (user.fcm_token) {
+          return user;
+        }
+        return user.name;
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      // res.status(401).json({
+      //   error: "User does not exist",
+      // });
+    });
 };
