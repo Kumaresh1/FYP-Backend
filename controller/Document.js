@@ -24,7 +24,7 @@ var ProductTags = [
   "tv",
   "television",
   "mobile",
-  "phone",
+  
 ];
 
 var BrandTags = [
