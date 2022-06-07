@@ -15,15 +15,31 @@ var ProductTags = [
   "mixie",
   "grinder",
   "fridge",
-  "washing Machine",
+  "washing machine",
   "washing",
   "air conditioner",
   "fan",
   "cooker",
+  "tv",
+  "television",
+  "mobile",
+  
 ];
 
-var BrandTags = ["preethi", "prestige", "lg", "samsung", "butterfly"];
-
+var BrandTags = [
+  "preethi",
+  "prestige",
+  "lg",
+  "samsung",
+  "butterfly",
+  "onida",
+  "hitachi",
+  "phillips",
+  "haier",
+  "bajaj",
+  "usha",
+  "pigeon",
+];
 // exports.TotalDocumentsMiddleware = async (req, res, next) => {
 //   //find Id of Family Member with Phone
 
@@ -285,6 +301,7 @@ exports.searchTopSellingBrandUnderProduct = async (req, res, next) => {
 };
 
 const ContentBasedRecommender = require("content-based-recommender");
+const contentBasedRecommender = require("content-based-recommender");
 
 exports.recommendations = async (req, res, next) => {
   console.log("Search top brand under product", req.body);
@@ -317,11 +334,21 @@ exports.recommendations = async (req, res, next) => {
             });
 
             AllData.push(userData);
-            AlldataFilter[userData.id] = userData.content;
+            if(!AlldataFilter[userData.id]){
+              AlldataFilter[userData.id]=""
+            }
+            AlldataFilter[userData.id] += userData.content;
           }
           // console.log(item);
         });
+        //console.log(AlldataFilter)
         const counts = {};
+
+      var recommendDataset=[];
+        for (const [key, value] of Object.entries(AlldataFilter)) {
+         recommendDataset.push({id:key,content:value})
+        }
+      // console.log(recommendDataset)
 
         // const productPercentage = [];
         // for (const product in counts) {
@@ -338,11 +365,11 @@ exports.recommendations = async (req, res, next) => {
         });
 
         // start training
-        recommender.train(AllData);
+        recommender.train(recommendDataset);
 
         //get top 100 similar items to document 1000002
         const similarDocuments = recommender.getSimilarDocuments(
-          userId || "28e441b3-adca-4208-8dab-d4a406b8b56c",
+          userId||  "724177a4-d5af-42a0-bd8c-1acf0dbaf25d",
           0,
           100
         );
@@ -365,7 +392,7 @@ exports.recommendations = async (req, res, next) => {
         });
         return res.status(200).json({
           //  documents: similarDocuments,
-          currentData: AlldataFilter[userId],
+          currentData: AlldataFilter[userId] ||"undefined",
           recommendData: recommendData,
           total: data,
         });
