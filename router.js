@@ -87,6 +87,7 @@ module.exports = function (app) {
   const ReadExpiryDates = async function () {
     const query = {};
 
+    
     await ExpiryDatesModel.find({})
       .then((datesarr) => {
         if (datesarr == null) {
@@ -135,6 +136,7 @@ module.exports = function (app) {
   // }, 1000);
 
   setInterval(() => {
+    
     ReadExpiryDates();
   }, 30000);
 
@@ -185,13 +187,14 @@ module.exports = function (app) {
   
 
   setInterval(async () => {
+  
     ExpiryDates.forEach(async (element) => {
       let ocrDate = element.expiry_date;
 
       // console.log(ocrDate);
       let d1 = ocrDate.match(/[0-9]{2}([-/ .])[0-9]{2}[-/ .][0-9]{4}/g);
 
-      var dt1 = Date.parse("2022-05-26");
+      var dt1 = Date.parse("2022-06-08");
       var dt2 = Date.parse(
         d1[0].slice(6, 10) + "-" + d1[0].slice(3, 5) + "-" + d1[0].slice(0, 2)
       );
@@ -413,6 +416,9 @@ module.exports = function (app) {
     res.status(404).send("Invalid request");
   });
 };
+
+
+
 
 
 const getToken = async (userId) => {
