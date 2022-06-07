@@ -415,9 +415,6 @@ module.exports = function (app) {
 };
 
 
-
-
-
 const getToken = async (userId) => {
   await User.findOne({ userId: userId })
     .then((user) => {
