@@ -361,7 +361,7 @@ exports.recommendations = async (req, res, next) => {
         const recommender = new ContentBasedRecommender({
           minScore: 0.1,
 
-          maxSimilarDocuments: 100,
+          maxSimilarDocuments: 200,
         });
 
         // start training
