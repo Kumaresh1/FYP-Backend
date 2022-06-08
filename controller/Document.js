@@ -227,8 +227,6 @@ exports.AddFamilyMember = async function (req, res, next) {
         res.status(201).json({
           message: "Document uploaded successfully",
           payload: val,
-          len:newDocuments.length,
-          data:newDocuments,
         });
       }
     })
